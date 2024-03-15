@@ -14,8 +14,11 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Swap files for vi(m)
+*.swp
+
 # Dependency directories (remove the comment below to include it)
-# vendor/
+generated/
 
 # Go workspace file
 go.work

@@ -1,0 +1,126 @@
+/*
+................................................................................
+.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+................................................................................
+.  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
+.                                                                              .
+.  This code is free software; you can redistribute it and/or modify it under  .
+.  the terms of The MIT License (MIT), as published by the Open Source         .
+.  Initiative. (See http://opensource.org/licenses/MIT)                        .
+................................................................................
+*/
+
+/*
+Package queues defines an example of each type of package construct.
+
+This package follows the Crater Dog Technologies™ (craterdog) Go Coding
+Conventions located here:
+  - https://github.com/craterdog/go-package-framework/wiki
+
+Additional implementations of the classes provided by this package can be
+developed and used seamlessly since the interface definitions only depend on
+other interfaces and primitive types; and the class implementations only depend
+on interfaces, not on each other.
+*/
+package queues
+
+import ()
+
+// TYPES
+
+// Specializations
+
+/*
+Item is a generic type representing any type of item.
+*/
+type Item any
+
+/*
+UnitType is a specialized type representing the possible units of temperature.
+*/
+type UnitType uint8
+
+const (
+	ErrorUnit UnitType = iota
+	Celsius
+	Fahrenheit
+	Kelvin
+)
+
+// Functionals
+
+/*
+ComparingFunction defines the signature for any function that can determine
+whether or not two specified items are equal to each other.
+*/
+type ComparingFunction func(first Item, second Item) bool
+
+// INTERFACES
+
+// Aspects
+
+/*
+Sequential[T Item] defines the set of method signatures that must be supported
+by all sequences of items.
+*/
+type Sequential[T Item] interface {
+	// Methods
+	AsArray() []T
+	GetItem(index int) T
+	IsEmpty() bool
+}
+
+/*
+Synchronized defines the set of method signatures that must be supported by all
+synchronized groups of threads.
+*/
+type Synchronized interface {
+	// Methods
+	Add(delta int)
+	Done()
+	Wait()
+}
+
+// Classes
+
+/*
+QueueClassLike[T Item] defines the set of class constants, constructors and
+functions that must be supported by all queue-class-like classes.
+*/
+type QueueClassLike[T Item] interface {
+	// Constants
+	DefaultCapacity() uint
+
+	// Constructors
+	Make() QueueLike[T]
+	MakeWithAttributes(capacity uint, protected bool) QueueLike[T]
+	MakeWithCapacity(capacity uint) QueueLike[T]
+	MakeWithComparer(comparer ComparingFunction) QueueLike[T]
+
+	// Functions
+	Join(group Synchronized, inputs Sequential[QueueLike[T]]) QueueLike[T]
+	Split(group Synchronized, input QueueLike[T]) Sequential[QueueLike[T]]
+}
+
+// Instances
+
+/*
+QueueLike[T Item] defines the set of abstractions and methods that must be
+supported by all queue-like instances.  A queue-like class implements FIFO
+(i.e.  first-in-first-out) semantics.
+*/
+type QueueLike[T Item] interface {
+	// Attributes
+	GetCapacity() uint
+	SetPassword(password []rune)
+	IsProtected() bool
+	SetProtected(protected bool)
+
+	// Abstractions
+	Sequential[T]
+	Synchronized
+
+	// Methods
+	CloseQueue()
+	RemoveHead() (head T, ok bool)
+}

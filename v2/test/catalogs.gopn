@@ -1,0 +1,171 @@
+/*
+................................................................................
+.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+................................................................................
+.  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
+.                                                                              .
+.  This code is free software; you can redistribute it and/or modify it under  .
+.  the terms of The MIT License (MIT), as published by the Open Source         .
+.  Initiative. (See http://opensource.org/licenses/MIT)                        .
+................................................................................
+*/
+
+/*
+Package catalogs defines...
+
+Additional implementations of the classes provided by this package can be
+developed and used seamlessly since the interface definitions only depend on
+other interfaces and primitive types; and the class implementations only depend
+on interfaces, not on each other.
+*/
+package catalogs
+
+// TYPES
+
+// Specializations
+
+/*
+Key is a generic type representing any type of associative key.
+*/
+type Key any
+
+/*
+Value is a generic type representing any type of value.
+*/
+type Value any
+
+// INTERFACES
+
+// Aspects
+
+/*
+Sequential[V Value] defines the set of method signatures that must be supported
+by all sequences of values.
+*/
+type Sequential[V Value] interface {
+	// Methods
+	AsArray() []V
+	GetIterator() IteratorLike[V]
+	GetSize() int
+	IsEmpty() bool
+}
+
+// Classes
+
+/*
+AssociationClassLike[K Key, V Value] defines the set of class constants,
+constructors and functions that must be supported by all
+association-class-like classes.
+*/
+type AssociationClassLike[K Key, V Value] interface {
+	// Constructors
+	MakeWithAttributes(key K, value V) AssociationLike[K, V]
+}
+
+/*
+CatalogClassLike[K comparable, V Value] defines the set of class constants,
+constructors and functions that must be supported by all catalog-class-like
+classes.  The following functions are supported:
+
+Extract() returns a new catalog containing only the associations that are in
+the specified catalog that have the specified keys.  The associations in the
+resulting catalog will be in the same order as the specified keys.
+
+Merge() returns a new catalog containing all of the associations that are in
+the specified Catalogs in the order that they appear in each catalog.  If a
+key is present in both Catalogs, the value of the key from the second
+catalog takes precedence.
+*/
+type CatalogClassLike[K comparable, V Value] interface {
+	// Constructors
+	Make() CatalogLike[K, V]
+	MakeFromArray(associations []AssociationLike[K, V]) CatalogLike[K, V]
+	MakeFromMap(associations map[K]V) CatalogLike[K, V]
+	MakeFromSequence(associations Sequential[AssociationLike[K, V]]) CatalogLike[K, V]
+
+	// Functions
+	Extract(catalog CatalogLike[K, V], keys Sequential[K]) CatalogLike[K, V]
+	Merge(first CatalogLike[K, V], second CatalogLike[K, V]) CatalogLike[K, V]
+}
+
+/*
+IteratorClassLike[V Value] defines the set of class constants, constructors and
+functions that must be supported by all iterator-class-like classes.
+*/
+type IteratorClassLike[V Value] interface {
+	// Constructors
+	Make(sequence Sequential[V]) IteratorLike[V]
+}
+
+// Instances
+
+/*
+AssociationLike[K Key, V Value] defines the set of abstractions and methods that
+must be supported by all association-like instances.  An association-like class
+maintains information about a key-value association.
+
+This type is parameterized as follows:
+  - K is a primitive type of key.
+  - V is any type of value.
+
+This type is used by catalog-like instances to maintain their associations.
+*/
+type AssociationLike[K Key, V Value] interface {
+	// Attributes
+	GetKey() K
+	GetValue() V
+	SetValue(value V)
+}
+
+/*
+CatalogLike[K Key, V Value] defines the set of abstractions and methods that
+must be supported by all catalog-like instances.  A catalog-like class maintains
+a sequence of key-value associations.
+
+This type is parameterized as follows:
+  - K is a primitive type of key.
+  - V is any type of entity.
+
+A catalog-like class can use any association-like class key-value association.
+*/
+type CatalogLike[K Key, V Value] interface {
+	// Abstractions
+	Sequential[AssociationLike[K, V]]
+}
+
+/*
+IteratorLike[V Value] defines the set of abstractions and methods that must be
+supported by all iterator-like instances.  An iterator-like class can be used to
+move forward and backward over the values in a sequence.  It implements the Gang
+of Four (GoF) Iterator Design Pattern:
+  - https://en.wikipedia.org/wiki/Iterator_pattern
+
+A iterator agent locks into the slots that reside between each value in the
+sequence:
+
+	    [value 1] . [value 2] . [value 3] ... [value N]
+	  ^           ^           ^                         ^
+	slot 0      slot 1      slot 2                    slot N
+
+It moves from slot to slot and has access to the values (if they exist) on each
+side of the slot.  At each slot an iterator has access to the previous value
+and next value in the sequence (assuming they exist). The slot at the start of
+the sequence has no PREVIOUS value, and the slot at the end of the sequence has
+no NEXT value.
+
+This type is parameterized as follows:
+  - V is any type of value.
+
+An iterator-like class is supported by all collection types.
+*/
+type IteratorLike[V Value] interface {
+	// Methods
+	GetNext() V
+	GetPrevious() V
+	GetSlot() int
+	HasNext() bool
+	HasPrevious() bool
+	ToEnd()
+	ToSlot(slot int)
+	ToStart()
+}
