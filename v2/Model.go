@@ -1,6 +1,6 @@
 /*
 ................................................................................
-.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+.    Copyright (c) 2009-2024 Crater Dog Technologies.  All Rights Reserved.    .
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .
@@ -750,7 +750,7 @@ supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	GeneratePackage(directory string)
+	GeneratePackage(directory string, notice string)
 }
 
 /*

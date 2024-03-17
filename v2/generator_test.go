@@ -1,6 +1,6 @@
 /*
 ................................................................................
-.    Copyright (c) 2009-2022 Crater Dog Technologies™.  All Rights Reserved.   .
+.    Copyright (c) 2009-2024 Crater Dog Technologies.  All Rights Reserved.    .
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .
@@ -22,6 +22,23 @@ import (
 
 const generatedDirectory = "./generated/"
 
+func TestInitialization(t *tes.T) {
+	var generator = pac.Generator().Make()
+
+	var directoryName = generatedDirectory + "new/"
+	var err = osx.RemoveAll(directoryName)
+	if err != nil {
+		panic(err)
+	}
+	err = osx.MkdirAll(directoryName, 0755)
+	if err != nil {
+		panic(err)
+	}
+
+	var notice = "Copyright (c) 2024 ACME Inc,  All Rights Reserved."
+	generator.GeneratePackage(directoryName, notice)
+}
+
 func TestGeneration(t *tes.T) {
 	var generator = pac.Generator().Make()
 
@@ -33,6 +50,7 @@ func TestGeneration(t *tes.T) {
 	for _, file := range files {
 		var fileSuffix = ".gopn"
 		var fileName = sts.TrimSuffix(file.Name(), fileSuffix)
+		fmt.Println(fileName)
 		var bytes, err = osx.ReadFile(testDirectory + file.Name())
 		if err != nil {
 			panic(err)
@@ -50,7 +68,6 @@ func TestGeneration(t *tes.T) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fileName)
-		generator.GeneratePackage(directoryName)
+		generator.GeneratePackage(directoryName, "")
 	}
 }

@@ -1,6 +1,6 @@
 /*
 ................................................................................
-.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+.    Copyright (c) 2009-2024 Crater Dog Technologies.  All Rights Reserved.    .
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .
@@ -154,10 +154,10 @@ const setterBodyTemplate_ = `
 	v.<AttributeName>_ = <ParameterName>
 `
 
-const packageTemplate_ = `
+const modelTemplate_ = `
 /*
 ................................................................................
-.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+<Notice>
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .

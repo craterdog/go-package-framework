@@ -1,6 +1,6 @@
 /*
 ................................................................................
-.    Copyright (c) 2009-2024 Crater Dog Technologies™.  All Rights Reserved.   .
+.    Copyright (c) 2009-2024 Crater Dog Technologies.  All Rights Reserved.    .
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .
@@ -60,15 +60,15 @@ type generator_ struct {
 
 // Public
 
-func (v *generator_) GeneratePackage(directory string) {
+func (v *generator_) GeneratePackage(directory string, notice string) {
 	if !sts.HasSuffix(directory, "/") {
 		directory += "/"
 	}
-	var gopn = v.parsePackage(directory)
+	var gopn = v.parseModel(directory, notice)
 	if gopn == nil {
 		return
 	}
-	v.generatePackage(directory, gopn)
+	v.generateModel(directory, gopn)
 	v.generateClasses(directory, gopn)
 }
 
@@ -632,12 +632,12 @@ func (v *generator_) generateInstanceTarget(
 	return target
 }
 
-func (v *generator_) generatePackage(directory string, gopn GoPNLike) {
+func (v *generator_) generateModel(directory string, gopn GoPNLike) {
 	var formatter = Formatter().Make()
 	var source = formatter.FormatGoPN(gopn)
 	var bytes = []byte(source)
-	var packageFile = directory + "Model.go"
-	var err = osx.WriteFile(packageFile, bytes, 0644)
+	var modelFile = directory + "Model.go"
+	var err = osx.WriteFile(modelFile, bytes, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -702,18 +702,36 @@ func (v *generator_) outputClass(classFile, class string) {
 	}
 }
 
-func (v *generator_) parsePackage(directory string) GoPNLike {
+func (v *generator_) parseModel(directory string, notice string) GoPNLike {
 	v.createDirectory(directory)
-	var packageFile = directory + "Model.go"
-	var bytes, err = osx.ReadFile(packageFile)
+	var modelFile = directory + "Model.go"
+	var bytes, err = osx.ReadFile(modelFile)
 	if err != nil {
 		// The file does not yet exist so create one.
 		fmt.Printf(
-			"The package file %q does not exist, creating a template for it.\n",
-			packageFile,
+			"The model file %q does not exist, creating a template for it.\n",
+			modelFile,
 		)
-		bytes = []byte(packageTemplate_[1:]) // Remove leading "\n".
-		err = osx.WriteFile(packageFile, bytes, 0644)
+		// Center the copyright notice string.
+		var maximum = 78
+		var length = len(notice)
+		if length > maximum {
+			notice = notice[:maximum]
+			length = maximum
+		}
+		var padding = (maximum - length) / 2
+		for range padding {
+			notice = " " + notice + " "
+		}
+		if len(notice) < maximum {
+			notice = " " + notice
+		}
+		notice = "." + notice + "."
+
+		// Create a new model template.
+		var template = sts.ReplaceAll(modelTemplate_, "<Notice>", notice)
+		bytes = []byte(template[1:]) // Remove leading "\n".
+		err = osx.WriteFile(modelFile, bytes, 0644)
 		if err != nil {
 			panic(err)
 		}
