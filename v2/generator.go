@@ -61,11 +61,53 @@ type generator_ struct {
 
 // Public
 
-func (v *generator_) GeneratePackage(directory string, copyright string) {
+func (v *generator_) CreatePackage(directory string, copyright string) {
+	// Center the copyright string.
+	var maximum = 78
+	var length = len(copyright)
+	if length > maximum {
+		var message = fmt.Sprintf(
+			"The copyright notice cannot be longer than 78 characters: %v",
+			copyright,
+		)
+		panic(message)
+	}
+	if length == 0 {
+		copyright = fmt.Sprintf(
+			"Copyright (c) %v.  All Rights Reserved.",
+			tim.Now().Year(),
+		)
+		length = len(copyright)
+	}
+	var padding = (maximum - length) / 2
+	for range padding {
+		copyright = " " + copyright + " "
+	}
+	if len(copyright) < maximum {
+		copyright = " " + copyright
+	}
+	copyright = "." + copyright + "."
+	var template = sts.ReplaceAll(modelTemplate_, "<Copyright>", copyright)
+	var bytes = []byte(template[1:]) // Remove leading "\n".
+
+	// Save the new package template.
+	v.createDirectory(directory)
+	var modelFile = directory + "Model.go"
+	fmt.Printf(
+		"The model file %q does not exist, creating a template for it.\n",
+		modelFile,
+	)
+	var err = osx.WriteFile(modelFile, bytes, 0644)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (v *generator_) GeneratePackage(directory string) {
 	if !sts.HasSuffix(directory, "/") {
 		directory += "/"
 	}
-	var package_ = v.parseModel(directory, copyright)
+	var package_ = v.parseModel(directory)
 	if package_ == nil {
 		return
 	}
@@ -703,50 +745,15 @@ func (v *generator_) outputClass(classFile, class string) {
 	}
 }
 
-func (v *generator_) parseModel(directory string, copyright string) PackageLike {
-	v.createDirectory(directory)
+func (v *generator_) parseModel(directory string) PackageLike {
 	var modelFile = directory + "Model.go"
 	var bytes, err = osx.ReadFile(modelFile)
 	if err != nil {
-		// The file does not yet exist so create one.
-		fmt.Printf(
-			"The model file %q does not exist, creating a template for it.\n",
+		var message = fmt.Sprintf(
+			"The specified directory is missing a model file: %v",
 			modelFile,
 		)
-		// Center the copyright string.
-		var maximum = 78
-		var length = len(copyright)
-		if length > maximum {
-			var message = fmt.Sprintf(
-				"The copyright notice cannot be longer than 78 characters: %v",
-				copyright,
-			)
-			panic(message)
-		}
-		if length == 0 {
-			copyright = fmt.Sprintf(
-				"Copyright (c) %v.  All Rights Reserved.",
-				tim.Now().Year(),
-			)
-			length = len(copyright)
-		}
-		var padding = (maximum - length) / 2
-		for range padding {
-			copyright = " " + copyright + " "
-		}
-		if len(copyright) < maximum {
-			copyright = " " + copyright
-		}
-		copyright = "." + copyright + "."
-
-		// Create a new model template.
-		var template = sts.ReplaceAll(modelTemplate_, "<Copyright>", copyright)
-		bytes = []byte(template[1:]) // Remove leading "\n".
-		err = osx.WriteFile(modelFile, bytes, 0644)
-		if err != nil {
-			panic(err)
-		}
-		return nil
+		panic(message)
 	}
 	var source = string(bytes)
 	var parser = Parser().Make()

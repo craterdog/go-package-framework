@@ -36,7 +36,7 @@ func TestInitialization(t *tes.T) {
 	}
 
 	var notice string
-	generator.GeneratePackage(directoryName, notice)
+	generator.CreatePackage(directoryName, notice)
 }
 
 func TestGeneration(t *tes.T) {
@@ -68,6 +68,6 @@ func TestGeneration(t *tes.T) {
 		if err != nil {
 			panic(err)
 		}
-		generator.GeneratePackage(directoryName, "")
+		generator.GeneratePackage(directoryName)
 	}
 }

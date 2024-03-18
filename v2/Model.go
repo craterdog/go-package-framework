@@ -741,7 +741,8 @@ supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	GeneratePackage(directory string, copyright string)
+	CreatePackage(directory string, copyright string)
+	GeneratePackage(directory string)
 }
 
 /*
