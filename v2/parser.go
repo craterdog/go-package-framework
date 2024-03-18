@@ -242,6 +242,7 @@ func (v *parser_) parseAbstraction() (
 			var message = v.formatError(token)
 			message += v.generateGrammar("]",
 				"$abstraction",
+				"$prefix",
 				"$arguments",
 			)
 			panic(message)
@@ -1305,6 +1306,7 @@ func (v *parser_) parseInstance() (
 		message += v.generateGrammar(`"interface"`,
 			"$instance",
 			"$declaration",
+			"$attributes",
 			"$abstractions",
 			"$methods",
 		)
@@ -1318,6 +1320,7 @@ func (v *parser_) parseInstance() (
 		message += v.generateGrammar("{",
 			"$instance",
 			"$declaration",
+			"$attributes",
 			"$abstractions",
 			"$methods",
 		)
@@ -1340,6 +1343,7 @@ func (v *parser_) parseInstance() (
 		message += v.generateGrammar("}",
 			"$instance",
 			"$declaration",
+			"$attributes",
 			"$abstractions",
 			"$methods",
 		)
@@ -1654,6 +1658,7 @@ func (v *parser_) parsePackage() (
 			"$package",
 			"$notice",
 			"$header",
+			"$imports",
 			"$types",
 			"$interfaces",
 		)
@@ -1883,7 +1888,9 @@ func (v *parser_) parseSpecialization() (
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
 			"$specialization",
+			"$declaration",
 			"$abstraction",
+			"$enumeration",
 		)
 		panic(message)
 	}
@@ -2016,7 +2023,7 @@ func (v *parser_) parseValues() (
 		var message = v.formatError(token)
 		message += v.generateGrammar("values",
 			"$values",
-			"$abstraction",
+			"$parameter",
 		)
 		panic(message)
 	}
@@ -2027,7 +2034,7 @@ func (v *parser_) parseValues() (
 		var message = v.formatError(token)
 		message += v.generateGrammar("=",
 			"$values",
-			"$abstraction",
+			"$parameter",
 		)
 		panic(message)
 	}
@@ -2038,7 +2045,7 @@ func (v *parser_) parseValues() (
 		var message = v.formatError(token)
 		message += v.generateGrammar("iota",
 			"$values",
-			"$abstraction",
+			"$parameter",
 		)
 		panic(message)
 	}
@@ -2066,6 +2073,8 @@ var grammar = map[string]string{
 	"$arguments":       `abstraction ("," abstraction)* ","?`,
 	"$aspect":          `declaration "interface" "{" methods? "}"`,
 	"$aspects":         `"// Aspects" aspect+`,
+	"$attribute":       `IDENTIFIER "(" parameter? ")" abstraction?`,
+	"$attributes":      `"// Attributes" attribute+`,
 	"$class":           `declaration "interface" "{" constants? constructors? functions? "}"`,
 	"$classes":         `"// Classes" class+`,
 	"$constant":        `IDENTIFIER "(" ")" abstraction`,
@@ -2078,10 +2087,9 @@ var grammar = map[string]string{
 	"$functional":      `declaration "func" "(" parameters? ")" result`,
 	"$functionals":     `"// Functionals" functional+`,
 	"$functions":       `"// Functions" function+`,
-	"$package":         `notice header imports? types? interfaces?`,
 	"$header":          `COMMENT "package" IDENTIFIER`,
 	"$imports":         `"import" "(" modules? ")"`,
-	"$instance":        `declaration "interface" "{" abstractions? methods? "}"`,
+	"$instance":        `declaration "interface" "{" attributes? abstractions? methods? "}"`,
 	"$instances":       `"// Instances" instance+`,
 	"$interfaces":      `"// INTERFACES" aspects? classes? instances?`,
 	"$method":          `IDENTIFIER "(" parameters? ")" result?`,
@@ -2089,13 +2097,14 @@ var grammar = map[string]string{
 	"$module":          `IDENTIFIER TEXT`,
 	"$modules":         `module+`,
 	"$notice":          `COMMENT`,
-	"$parameter":       `IDENTIFIER ("," IDENTIFIER)* abstraction`,
+	"$package":         `notice header imports? types? interfaces?`,
+	"$parameter":       `IDENTIFIER abstraction`,
 	"$parameters":      `parameter ("," parameter)* ","?`,
 	"$prefix":          `"[" "]" | "map" "[" IDENTIFIER "]" | "chan" | IDENTIFIER "."`,
 	"$result":          `abstraction | "(" parameters ")"`,
-	"$source":          `package EOF`,
+	"$source":          `package EOF  ! Terminated with an end-of-file marker.`,
 	"$specialization":  `declaration abstraction enumeration?`,
 	"$specializations": `"// Specializations" specialization+`,
 	"$types":           `"// TYPES" specializations? functionals?`,
-	"$values":          `IDENTIFIER abstraction "=" "iota" IDENTIFIER*`,
+	"$values":          `parameter "=" "iota" IDENTIFIER*`,
 }
