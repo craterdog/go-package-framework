@@ -70,11 +70,11 @@ type validator_ struct {
 
 // Public
 
-func (v *validator_) ValidatePackage(gopn GoPNLike) {
+func (v *validator_) ValidatePackage(package_ PackageLike) {
 	// Extract the catalogs.
-	v.extractImports(gopn)
-	v.extractTypes(gopn)
-	v.extractInterfaces(gopn)
+	v.extractImports(package_)
+	v.extractTypes(package_)
+	v.extractInterfaces(package_)
 
 	// Validate the catalogs.
 	v.validateModules()
@@ -129,8 +129,8 @@ func (v *validator_) extractFunctionals(types TypesLike) {
 	}
 }
 
-func (v *validator_) extractImports(gopn GoPNLike) {
-	var imports = gopn.GetImports()
+func (v *validator_) extractImports(package_ PackageLike) {
+	var imports = package_.GetImports()
 	if imports == nil {
 		return
 	}
@@ -152,8 +152,8 @@ func (v *validator_) extractInstances(interfaces InterfacesLike) {
 	}
 }
 
-func (v *validator_) extractInterfaces(gopn GoPNLike) {
-	var interfaces = gopn.GetInterfaces()
+func (v *validator_) extractInterfaces(package_ PackageLike) {
+	var interfaces = package_.GetInterfaces()
 	if interfaces == nil {
 		return
 	}
@@ -189,8 +189,8 @@ func (v *validator_) extractSpecializations(types TypesLike) {
 	}
 }
 
-func (v *validator_) extractTypes(gopn GoPNLike) {
-	var types = gopn.GetTypes()
+func (v *validator_) extractTypes(package_ PackageLike) {
+	var types = package_.GetTypes()
 	if types == nil {
 		return
 	}

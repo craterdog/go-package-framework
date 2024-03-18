@@ -13,7 +13,8 @@
 !>
     GO PACKAGE NOTATION
     This document is a formal definition of Go Package Notation™ (GoPN) using
-    Crater Dog Syntax Notation™ (CDSN).
+    Crater Dog Syntax Notation™ (CDSN).  A language grammar consists of a set of
+    token and rule definitions.
 
     TOKEN DEFINITIONS
     The following token definitions are used by the scanner to generate the
@@ -70,9 +71,9 @@ $TEXT: '"' ANY* '"'  ! Chooses the shortest possible match.
 
 $source: package EOF  ! Terminated with an end-of-file marker.
 
-$package: copyright header imports? types? interfaces?
+$package: notice header imports? types? interfaces?
 
-$copyright: COMMENT
+$notice: COMMENT
 
 $header: COMMENT "package" IDENTIFIER
 

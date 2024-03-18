@@ -18,21 +18,21 @@ import ()
 
 // Reference
 
-var copyrightClass = &copyrightClass_{
+var noticeClass = &noticeClass_{
 	// TBA - Assign constant values.
 }
 
 // Function
 
-func Copyright() CopyrightClassLike {
-	return copyrightClass
+func Notice() NoticeClassLike {
+	return noticeClass
 }
 
 // CLASS METHODS
 
 // Target
 
-type copyrightClass_ struct {
+type noticeClass_ struct {
 	// TBA - Add private class constants.
 }
 
@@ -40,8 +40,8 @@ type copyrightClass_ struct {
 
 // Constructors
 
-func (c *copyrightClass_) MakeWithAttributes(comment string) CopyrightLike {
-	return &copyright_{
+func (c *noticeClass_) MakeWithAttributes(comment string) NoticeLike {
+	return &notice_{
 		comment_: comment,
 	}
 }
@@ -52,13 +52,13 @@ func (c *copyrightClass_) MakeWithAttributes(comment string) CopyrightLike {
 
 // Target
 
-type copyright_ struct {
+type notice_ struct {
 	comment_ string
 }
 
 // Attributes
 
-func (v *copyright_) GetComment() string {
+func (v *notice_) GetComment() string {
 	return v.comment_
 }
 

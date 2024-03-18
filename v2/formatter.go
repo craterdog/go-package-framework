@@ -66,8 +66,8 @@ func (v *formatter_) FormatArguments(arguments ArgumentsLike) string {
 	return v.getResult()
 }
 
-func (v *formatter_) FormatGoPN(gopn GoPNLike) string {
-	v.formatGoPN(gopn)
+func (v *formatter_) FormatPackage(package_ PackageLike) string {
+	v.formatPackage(package_)
 	return v.getResult()
 }
 
@@ -308,8 +308,8 @@ func (v *formatter_) formatConstructors(constructors ConstructorsLike) {
 	}
 }
 
-func (v *formatter_) formatCopyright(copyright CopyrightLike) {
-	var comment = copyright.GetComment()
+func (v *formatter_) formatNotice(notice NoticeLike) {
+	var comment = notice.GetComment()
 	comment = v.fixComment(comment)
 	v.appendString(comment)
 }
@@ -391,21 +391,21 @@ func (v *formatter_) formatFunctionals(functionals FunctionalsLike) {
 	}
 }
 
-func (v *formatter_) formatGoPN(gopn GoPNLike) {
-	var copyright = gopn.GetCopyright()
-	v.formatCopyright(copyright)
-	var header = gopn.GetHeader()
+func (v *formatter_) formatPackage(package_ PackageLike) {
+	var notice = package_.GetNotice()
+	v.formatNotice(notice)
+	var header = package_.GetHeader()
 	v.formatHeader(header)
 	v.appendNewline()
-	var imports = gopn.GetImports()
+	var imports = package_.GetImports()
 	if imports != nil {
 		v.formatImports(imports)
 	}
-	var types = gopn.GetTypes()
+	var types = package_.GetTypes()
 	if types != nil {
 		v.formatTypes(types)
 	}
-	var interfaces = gopn.GetInterfaces()
+	var interfaces = package_.GetInterfaces()
 	if interfaces != nil {
 		v.formatInterfaces(interfaces)
 	}

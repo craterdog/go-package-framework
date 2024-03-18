@@ -12,7 +12,7 @@
 
 package packages
 
-const classTemplate_ = `<Copyright><Header><Imports><Access><Class><Instance>`
+const classTemplate_ = `<Notice><Header><Imports><Access><Class><Instance>`
 
 const headerTemplate_ = `package <PackageName>`
 
@@ -157,7 +157,7 @@ const setterBodyTemplate_ = `
 const modelTemplate_ = `
 /*
 ................................................................................
-<Notice>
+<Copyright>
 ................................................................................
 .  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.               .
 .                                                                              .

@@ -204,15 +204,6 @@ type ConstructorsClassLike interface {
 }
 
 /*
-CopyrightClassLike defines the set of class constants, constructors and
-functions that must be supported by all copyright-class-like classes.
-*/
-type CopyrightClassLike interface {
-	// Constructors
-	MakeWithAttributes(comment string) CopyrightLike
-}
-
-/*
 DeclarationClassLike defines the set of class constants, constructors and
 functions that must be supported by all declaration-class-like classes.
 */
@@ -297,18 +288,18 @@ type GeneratorClassLike interface {
 }
 
 /*
-GoPNClassLike defines the set of class constants, constructors and functions
-that must be supported by all gopn-class-like classes.
+PackageClassLike defines the set of class constants, constructors and functions
+that must be supported by all package-class-like classes.
 */
-type GoPNClassLike interface {
+type PackageClassLike interface {
 	// Constructors
 	MakeWithAttributes(
-		copyright CopyrightLike,
+		notice NoticeLike,
 		header HeaderLike,
 		imports ImportsLike,
 		types TypesLike,
 		interfaces InterfacesLike,
-	) GoPNLike
+	) PackageLike
 }
 
 /*
@@ -403,6 +394,15 @@ that must be supported by all modules-class-like classes.
 type ModulesClassLike interface {
 	// Constructors
 	MakeWithAttributes(sequence col.Sequential[ModuleLike]) ModulesLike
+}
+
+/*
+NoticeClassLike defines the set of class constants, constructors and
+functions that must be supported by all notice-class-like classes.
+*/
+type NoticeClassLike interface {
+	// Constructors
+	MakeWithAttributes(comment string) NoticeLike
 }
 
 /*
@@ -660,15 +660,6 @@ type ConstructorsLike interface {
 }
 
 /*
-CopyrightLike defines the set of abstractions and methods that must be supported
-by all copyright-like instances.
-*/
-type CopyrightLike interface {
-	// Attributes
-	GetComment() string
-}
-
-/*
 DeclarationLike defines the set of abstractions and methods that must be
 supported by all declaration-like instances.
 */
@@ -696,7 +687,7 @@ type FormatterLike interface {
 	// Methods
 	FormatAbstraction(abstraction AbstractionLike) string
 	FormatArguments(arguments ArgumentsLike) string
-	FormatGoPN(gopn GoPNLike) string
+	FormatPackage(package_ PackageLike) string
 	FormatMethod(method MethodLike) string
 	FormatParameter(parameter ParameterLike) string
 	FormatParameterNames(parameters ParametersLike) string
@@ -750,16 +741,16 @@ supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	GeneratePackage(directory string, notice string)
+	GeneratePackage(directory string, copyright string)
 }
 
 /*
-GoPNLike defines the set of abstractions and methods that must be supported by
-all gopn-like instances.
+PackageLike defines the set of abstractions and methods that must be supported by
+all package-like instances.
 */
-type GoPNLike interface {
+type PackageLike interface {
 	// Attributes
-	GetCopyright() CopyrightLike
+	GetNotice() NoticeLike
 	GetHeader() HeaderLike
 	GetImports() ImportsLike
 	GetInterfaces() InterfacesLike
@@ -857,6 +848,15 @@ type ModulesLike interface {
 }
 
 /*
+NoticeLike defines the set of abstractions and methods that must be supported
+by all notice-like instances.
+*/
+type NoticeLike interface {
+	// Attributes
+	GetComment() string
+}
+
+/*
 ParameterLike defines the set of abstractions and methods that must be supported
 by all parameter-like instances.
 */
@@ -881,7 +881,7 @@ all parser-like instances.
 */
 type ParserLike interface {
 	// Methods
-	ParseSource(source string) GoPNLike
+	ParseSource(source string) PackageLike
 }
 
 /*
@@ -959,7 +959,7 @@ supported by all validator-like instances.
 */
 type ValidatorLike interface {
 	// Methods
-	ValidatePackage(gopn GoPNLike)
+	ValidatePackage(package_ PackageLike)
 }
 
 /*

@@ -41,9 +41,9 @@ func TestRoundtrips(t *tes.T) {
 				panic(err)
 			}
 			var expected = string(bytes)
-			var gopn = parser.ParseSource(expected)
-			validator.ValidatePackage(gopn)
-			var actual = formatter.FormatGoPN(gopn)
+			var package_ = parser.ParseSource(expected)
+			validator.ValidatePackage(package_)
+			var actual = formatter.FormatPackage(package_)
 			ass.Equal(t, expected, actual)
 		}
 	}

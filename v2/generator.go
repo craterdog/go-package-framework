@@ -60,16 +60,16 @@ type generator_ struct {
 
 // Public
 
-func (v *generator_) GeneratePackage(directory string, notice string) {
+func (v *generator_) GeneratePackage(directory string, copyright string) {
 	if !sts.HasSuffix(directory, "/") {
 		directory += "/"
 	}
-	var gopn = v.parseModel(directory, notice)
-	if gopn == nil {
+	var package_ = v.parseModel(directory, copyright)
+	if package_ == nil {
 		return
 	}
-	v.generateModel(directory, gopn)
-	v.generateClasses(directory, gopn)
+	v.generateModel(directory, package_)
+	v.generateClasses(directory, package_)
 }
 
 // Private
@@ -223,7 +223,7 @@ func (v *generator_) generateAbstractionMethods(
 }
 
 func (v *generator_) generateAbstractions(
-	gopn GoPNLike,
+	package_ PackageLike,
 	instanceInterface InstanceLike,
 ) string {
 	var formatter = Formatter().Make()
@@ -241,7 +241,7 @@ func (v *generator_) generateAbstractions(
 		var methods string
 		if prefix == nil {
 			// We only know the method signatures for the local aspects.
-			var aspect = v.retrieveAspect(gopn, identifier)
+			var aspect = v.retrieveAspect(package_, identifier)
 			methods = v.generateAbstractionMethods(aspect, abstraction)
 		}
 		var instanceAspect = instanceAspectTemplate_
@@ -332,16 +332,16 @@ func (v *generator_) generateAttributeMethods(instanceInterface InstanceLike) st
 
 func (v *generator_) generateClass(
 	directory string,
-	gopn GoPNLike,
+	package_ PackageLike,
 	classInterface ClassLike,
 	instanceInterface InstanceLike,
 ) {
 	var class = classTemplate_
 
-	var copyright = gopn.GetCopyright().GetComment()
-	class = sts.ReplaceAll(class, "<Copyright>", copyright)
+	var notice = package_.GetNotice().GetComment()
+	class = sts.ReplaceAll(class, "<Notice>", notice)
 
-	var header = v.generateHeader(gopn)
+	var header = v.generateHeader(package_)
 	class = sts.ReplaceAll(class, "<Header>", header)
 
 	var classAccess = v.generateClassAccess(classInterface)
@@ -351,7 +351,7 @@ func (v *generator_) generateClass(
 	class = sts.ReplaceAll(class, "<Class>", classMethods)
 
 	var instanceMethods = v.generateInstanceMethods(
-		gopn,
+		package_,
 		classInterface,
 		instanceInterface,
 	)
@@ -374,7 +374,7 @@ func (v *generator_) generateClass(
 	class = sts.ReplaceAll(class, "[<Parameters>]", parameters)
 	class = sts.ReplaceAll(class, "[<Arguments>]", arguments)
 
-	var imports = v.generateImports(gopn, class)
+	var imports = v.generateImports(package_, class)
 	class = sts.ReplaceAll(class, "<Imports>", imports)
 
 	var fileName = sts.ToLower(className)
@@ -382,8 +382,8 @@ func (v *generator_) generateClass(
 	v.outputClass(classFile, class)
 }
 
-func (v *generator_) generateClasses(directory string, gopn GoPNLike) {
-	var interfaces = gopn.GetInterfaces()
+func (v *generator_) generateClasses(directory string, package_ PackageLike) {
+	var interfaces = package_.GetInterfaces()
 	if interfaces == nil {
 		return
 	}
@@ -397,7 +397,7 @@ func (v *generator_) generateClasses(directory string, gopn GoPNLike) {
 	for classIterator.HasNext() {
 		var classInterface = classIterator.GetNext()
 		var instanceInterface = instanceIterator.GetNext()
-		v.generateClass(directory, gopn, classInterface, instanceInterface)
+		v.generateClass(directory, package_, classInterface, instanceInterface)
 	}
 }
 
@@ -542,17 +542,17 @@ func (v *generator_) generateFunctionMethods(classInterface ClassLike) string {
 	return methods
 }
 
-func (v *generator_) generateHeader(gopn GoPNLike) string {
-	var packageName = gopn.GetHeader().GetIdentifier()
+func (v *generator_) generateHeader(package_ PackageLike) string {
+	var packageName = package_.GetHeader().GetIdentifier()
 	var header = headerTemplate_
 	header = sts.ReplaceAll(header, "<PackageName>", packageName) + "\n"
 	return header
 }
 
-func (v *generator_) generateImports(gopn GoPNLike, class string) string {
+func (v *generator_) generateImports(package_ PackageLike, class string) string {
 	var imports string
 	var modules string
-	var packageImports = gopn.GetImports()
+	var packageImports = package_.GetImports()
 	if packageImports != nil {
 		var packageModules = packageImports.GetModules()
 		if packageModules != nil {
@@ -606,7 +606,7 @@ func (v *generator_) generateInstanceAttributes(
 }
 
 func (v *generator_) generateInstanceMethods(
-	gopn GoPNLike,
+	package_ PackageLike,
 	classInterface ClassLike,
 	instanceInterface InstanceLike,
 ) string {
@@ -615,7 +615,7 @@ func (v *generator_) generateInstanceMethods(
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Target>", target)
 	var attributes = v.generateAttributeMethods(instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Attributes>", attributes)
-	var abstractions = v.generateAbstractions(gopn, instanceInterface)
+	var abstractions = v.generateAbstractions(package_, instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Abstractions>", abstractions)
 	var methods = v.generatePublicMethods(instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Methods>", methods)
@@ -632,9 +632,9 @@ func (v *generator_) generateInstanceTarget(
 	return target
 }
 
-func (v *generator_) generateModel(directory string, gopn GoPNLike) {
+func (v *generator_) generateModel(directory string, package_ PackageLike) {
 	var formatter = Formatter().Make()
-	var source = formatter.FormatGoPN(gopn)
+	var source = formatter.FormatPackage(package_)
 	var bytes = []byte(source)
 	var modelFile = directory + "Model.go"
 	var err = osx.WriteFile(modelFile, bytes, 0644)
@@ -702,7 +702,7 @@ func (v *generator_) outputClass(classFile, class string) {
 	}
 }
 
-func (v *generator_) parseModel(directory string, notice string) GoPNLike {
+func (v *generator_) parseModel(directory string, copyright string) PackageLike {
 	v.createDirectory(directory)
 	var modelFile = directory + "Model.go"
 	var bytes, err = osx.ReadFile(modelFile)
@@ -712,24 +712,24 @@ func (v *generator_) parseModel(directory string, notice string) GoPNLike {
 			"The model file %q does not exist, creating a template for it.\n",
 			modelFile,
 		)
-		// Center the copyright notice string.
+		// Center the copyright string.
 		var maximum = 78
-		var length = len(notice)
+		var length = len(copyright)
 		if length > maximum {
-			notice = notice[:maximum]
+			copyright = copyright[:maximum]
 			length = maximum
 		}
 		var padding = (maximum - length) / 2
 		for range padding {
-			notice = " " + notice + " "
+			copyright = " " + copyright + " "
 		}
-		if len(notice) < maximum {
-			notice = " " + notice
+		if len(copyright) < maximum {
+			copyright = " " + copyright
 		}
-		notice = "." + notice + "."
+		copyright = "." + copyright + "."
 
 		// Create a new model template.
-		var template = sts.ReplaceAll(modelTemplate_, "<Notice>", notice)
+		var template = sts.ReplaceAll(modelTemplate_, "<Copyright>", copyright)
 		bytes = []byte(template[1:]) // Remove leading "\n".
 		err = osx.WriteFile(modelFile, bytes, 0644)
 		if err != nil {
@@ -739,8 +739,8 @@ func (v *generator_) parseModel(directory string, notice string) GoPNLike {
 	}
 	var source = string(bytes)
 	var parser = Parser().Make()
-	var gopn = parser.ParseSource(source)
-	return gopn
+	var package_ = parser.ParseSource(source)
+	return package_
 }
 
 func (v *generator_) replaceGenericType(
@@ -830,10 +830,10 @@ func (v *generator_) replaceResultTypes(
 }
 
 func (v *generator_) retrieveAspect(
-	gopn GoPNLike,
+	package_ PackageLike,
 	identifier string,
 ) AspectLike {
-	var iterator = gopn.GetInterfaces().GetAspects().GetSequence().GetIterator()
+	var iterator = package_.GetInterfaces().GetAspects().GetSequence().GetIterator()
 	for iterator.HasNext() {
 		var aspect = iterator.GetNext()
 		var declaration = aspect.GetDeclaration()

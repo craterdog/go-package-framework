@@ -62,19 +62,19 @@ type parser_ struct {
 
 // Public
 
-func (v *parser_) ParseSource(source string) GoPNLike {
+func (v *parser_) ParseSource(source string) PackageLike {
 	// The scanner runs in a separate Go routine.
 	v.source_ = sts.ReplaceAll(source, "\t", "    ") // F'ing tabs!
 	v.tokens_ = col.Queue[TokenLike]().MakeWithCapacity(parserClass.queueSize_)
 	Scanner().MakeFromSource(v.source_, v.tokens_)
 
-	// Attempt to parse GoPN.
-	var gopn, token, ok = v.parseGoPN()
+	// Attempt to parse Package.
+	var package_, token, ok = v.parsePackage()
 	if !ok {
 		var message = v.formatError(token)
-		message += v.generateGrammar("gopn",
+		message += v.generateGrammar("package",
 			"$source",
-			"$gopn",
+			"$package",
 		)
 		panic(message)
 	}
@@ -85,13 +85,13 @@ func (v *parser_) ParseSource(source string) GoPNLike {
 		var message = v.formatError(token)
 		message += v.generateGrammar("EOF",
 			"$source",
-			"$gopn",
+			"$package",
 		)
 		panic(message)
 	}
 
-	// Found GoPN.
-	return gopn
+	// Found Package.
+	return package_
 }
 
 // Private
@@ -839,8 +839,8 @@ func (v *parser_) parseConstructors() (
 	return constructors, token, true
 }
 
-func (v *parser_) parseCopyright() (
-	copyright CopyrightLike,
+func (v *parser_) parseNotice() (
+	notice NoticeLike,
 	token TokenLike,
 	ok bool,
 ) {
@@ -849,13 +849,13 @@ func (v *parser_) parseCopyright() (
 	// Attempt to parse a comment.
 	comment, token, ok = v.parseToken(CommentToken, "")
 	if !ok {
-		// This is not a copyright.
-		return copyright, token, false
+		// This is not a notice.
+		return notice, token, false
 	}
 
-	// Found a copyright.
-	copyright = Copyright().MakeWithAttributes(comment)
-	return copyright, token, true
+	// Found a notice.
+	notice = Notice().MakeWithAttributes(comment)
+	return notice, token, true
 }
 
 func (v *parser_) parseDeclaration() (
@@ -1216,22 +1216,22 @@ func (v *parser_) parseFunctionals() (
 	return functionals, token, true
 }
 
-func (v *parser_) parseGoPN() (
-	gopn GoPNLike,
+func (v *parser_) parsePackage() (
+	package_ PackageLike,
 	token TokenLike,
 	ok bool,
 ) {
-	var copyright CopyrightLike
+	var notice NoticeLike
 	var header HeaderLike
 	var types TypesLike
 	var interfaces InterfacesLike
 	var imports ImportsLike
 
-	// Attempt to parse a copyright.
-	copyright, token, ok = v.parseCopyright()
+	// Attempt to parse a notice.
+	notice, token, ok = v.parseNotice()
 	if !ok {
-		// This is not GoPN.
-		return gopn, token, false
+		// This is not Package.
+		return package_, token, false
 	}
 
 	// Attempt to parse a header.
@@ -1239,8 +1239,8 @@ func (v *parser_) parseGoPN() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("header",
-			"$gopn",
-			"$copyright",
+			"$package",
+			"$notice",
 			"$header",
 			"$types",
 			"$interfaces",
@@ -1257,9 +1257,9 @@ func (v *parser_) parseGoPN() (
 	// Attempt to parse an optional sequence of interfaces.
 	interfaces, _, _ = v.parseInterfaces()
 
-	// Found GoPN.
-	gopn = GoPN().MakeWithAttributes(copyright, header, imports, types, interfaces)
-	return gopn, token, true
+	// Found a package.
+	package_ = Package().MakeWithAttributes(notice, header, imports, types, interfaces)
+	return package_, token, true
 }
 
 func (v *parser_) parseHeader() (
@@ -2072,14 +2072,13 @@ var grammar = map[string]string{
 	"$constants":       `"// Constants" constant+`,
 	"$constructor":     `IDENTIFIER "(" parameters? ")" abstraction`,
 	"$constructors":    `"// Constructors" constructor+`,
-	"$copyright":       `COMMENT`,
 	"$declaration":     `COMMENT "type" IDENTIFIER ("[" parameters "]")?`,
 	"$enumeration":     `"const" "(" values ")"`,
 	"$function":        `IDENTIFIER "(" parameters? ")" result`,
 	"$functional":      `declaration "func" "(" parameters? ")" result`,
 	"$functionals":     `"// Functionals" functional+`,
 	"$functions":       `"// Functions" function+`,
-	"$gopn":            `copyright header imports? types? interfaces?`,
+	"$package":         `notice header imports? types? interfaces?`,
 	"$header":          `COMMENT "package" IDENTIFIER`,
 	"$imports":         `"import" "(" modules? ")"`,
 	"$instance":        `declaration "interface" "{" abstractions? methods? "}"`,
@@ -2089,11 +2088,12 @@ var grammar = map[string]string{
 	"$methods":         `"// Methods" method+`,
 	"$module":          `IDENTIFIER TEXT`,
 	"$modules":         `module+`,
+	"$notice":          `COMMENT`,
 	"$parameter":       `IDENTIFIER ("," IDENTIFIER)* abstraction`,
 	"$parameters":      `parameter ("," parameter)* ","?`,
 	"$prefix":          `"[" "]" | "map" "[" IDENTIFIER "]" | "chan" | IDENTIFIER "."`,
 	"$result":          `abstraction | "(" parameters ")"`,
-	"$source":          `gopn EOF`,
+	"$source":          `package EOF`,
 	"$specialization":  `declaration abstraction enumeration?`,
 	"$specializations": `"// Specializations" specialization+`,
 	"$types":           `"// TYPES" specializations? functionals?`,

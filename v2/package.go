@@ -18,21 +18,21 @@ import ()
 
 // Reference
 
-var goPNClass = &goPNClass_{
+var packageClass = &packageClass_{
 	// TBA - Assign constant values.
 }
 
 // Function
 
-func GoPN() GoPNClassLike {
-	return goPNClass
+func Package() PackageClassLike {
+	return packageClass
 }
 
 // CLASS METHODS
 
 // Target
 
-type goPNClass_ struct {
+type packageClass_ struct {
 	// TBA - Add private class constants.
 }
 
@@ -40,15 +40,15 @@ type goPNClass_ struct {
 
 // Constructors
 
-func (c *goPNClass_) MakeWithAttributes(
-	copyright CopyrightLike,
+func (c *packageClass_) MakeWithAttributes(
+	notice NoticeLike,
 	header HeaderLike,
 	imports ImportsLike,
 	types TypesLike,
 	interfaces InterfacesLike,
-) GoPNLike {
-	return &goPN_{
-		copyright_:  copyright,
+) PackageLike {
+	return &package_{
+		notice_:     notice,
 		header_:     header,
 		imports_:    imports,
 		types_:      types,
@@ -62,8 +62,8 @@ func (c *goPNClass_) MakeWithAttributes(
 
 // Target
 
-type goPN_ struct {
-	copyright_  CopyrightLike
+type package_ struct {
+	notice_     NoticeLike
 	header_     HeaderLike
 	imports_    ImportsLike
 	interfaces_ InterfacesLike
@@ -72,23 +72,23 @@ type goPN_ struct {
 
 // Attributes
 
-func (v *goPN_) GetCopyright() CopyrightLike {
-	return v.copyright_
+func (v *package_) GetNotice() NoticeLike {
+	return v.notice_
 }
 
-func (v *goPN_) GetHeader() HeaderLike {
+func (v *package_) GetHeader() HeaderLike {
 	return v.header_
 }
 
-func (v *goPN_) GetImports() ImportsLike {
+func (v *package_) GetImports() ImportsLike {
 	return v.imports_
 }
 
-func (v *goPN_) GetInterfaces() InterfacesLike {
+func (v *package_) GetInterfaces() InterfacesLike {
 	return v.interfaces_
 }
 
-func (v *goPN_) GetTypes() TypesLike {
+func (v *package_) GetTypes() TypesLike {
 	return v.types_
 }
 
