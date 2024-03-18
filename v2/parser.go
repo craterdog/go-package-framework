@@ -839,25 +839,6 @@ func (v *parser_) parseConstructors() (
 	return constructors, token, true
 }
 
-func (v *parser_) parseNotice() (
-	notice NoticeLike,
-	token TokenLike,
-	ok bool,
-) {
-	var comment string
-
-	// Attempt to parse a comment.
-	comment, token, ok = v.parseToken(CommentToken, "")
-	if !ok {
-		// This is not a notice.
-		return notice, token, false
-	}
-
-	// Found a notice.
-	notice = Notice().MakeWithAttributes(comment)
-	return notice, token, true
-}
-
 func (v *parser_) parseDeclaration() (
 	declaration DeclarationLike,
 	token TokenLike,
@@ -1214,52 +1195,6 @@ func (v *parser_) parseFunctionals() (
 	// Found a sequence of functionals.
 	functionals = Functionals().MakeWithAttributes(sequence)
 	return functionals, token, true
-}
-
-func (v *parser_) parsePackage() (
-	package_ PackageLike,
-	token TokenLike,
-	ok bool,
-) {
-	var notice NoticeLike
-	var header HeaderLike
-	var types TypesLike
-	var interfaces InterfacesLike
-	var imports ImportsLike
-
-	// Attempt to parse a notice.
-	notice, token, ok = v.parseNotice()
-	if !ok {
-		// This is not Package.
-		return package_, token, false
-	}
-
-	// Attempt to parse a header.
-	header, token, ok = v.parseHeader()
-	if !ok {
-		var message = v.formatError(token)
-		message += v.generateGrammar("header",
-			"$package",
-			"$notice",
-			"$header",
-			"$types",
-			"$interfaces",
-		)
-		panic(message)
-	}
-
-	// Attempt to parse an optional sequence of imports.
-	imports, _, _ = v.parseImports()
-
-	// Attempt to parse an optional sequence of types.
-	types, _, _ = v.parseTypes()
-
-	// Attempt to parse an optional sequence of interfaces.
-	interfaces, _, _ = v.parseInterfaces()
-
-	// Found a package.
-	package_ = Package().MakeWithAttributes(notice, header, imports, types, interfaces)
-	return package_, token, true
 }
 
 func (v *parser_) parseHeader() (
@@ -1672,6 +1607,71 @@ func (v *parser_) parseModules() (
 	// Found a sequence of modules.
 	modules = Modules().MakeWithAttributes(sequence)
 	return modules, token, true
+}
+
+func (v *parser_) parseNotice() (
+	notice NoticeLike,
+	token TokenLike,
+	ok bool,
+) {
+	var comment string
+
+	// Attempt to parse a comment.
+	comment, token, ok = v.parseToken(CommentToken, "")
+	if !ok {
+		// This is not a notice.
+		return notice, token, false
+	}
+
+	// Found a notice.
+	notice = Notice().MakeWithAttributes(comment)
+	return notice, token, true
+}
+
+func (v *parser_) parsePackage() (
+	package_ PackageLike,
+	token TokenLike,
+	ok bool,
+) {
+	var notice NoticeLike
+	var header HeaderLike
+	var types TypesLike
+	var interfaces InterfacesLike
+	var imports ImportsLike
+
+	// Attempt to parse a notice.
+	notice, token, ok = v.parseNotice()
+	if !ok {
+		// This is not Package.
+		return package_, token, false
+	}
+
+	// Attempt to parse a header.
+	header, token, ok = v.parseHeader()
+	if !ok {
+		var message = v.formatError(token)
+		message += v.generateGrammar("header",
+			"$package",
+			"$notice",
+			"$header",
+			"$types",
+			"$interfaces",
+		)
+		panic(message)
+	}
+
+	// Attempt to parse an optional sequence of imports.
+	imports, _, _ = v.parseImports()
+
+	// Attempt to parse an optional sequence of types.
+	types, _, _ = v.parseTypes()
+
+	// Attempt to parse an optional sequence of interfaces.
+	interfaces, _, _ = v.parseInterfaces()
+
+	// Found a package.
+	package_ = Package().MakeWithAttributes(notice, header, imports, types, interfaces)
+	return package_, token, true
 }
 
 func (v *parser_) parseParameter() (

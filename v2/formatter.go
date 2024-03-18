@@ -66,13 +66,13 @@ func (v *formatter_) FormatArguments(arguments ArgumentsLike) string {
 	return v.getResult()
 }
 
-func (v *formatter_) FormatPackage(package_ PackageLike) string {
-	v.formatPackage(package_)
+func (v *formatter_) FormatMethod(method MethodLike) string {
+	v.formatMethod(method)
 	return v.getResult()
 }
 
-func (v *formatter_) FormatMethod(method MethodLike) string {
-	v.formatMethod(method)
+func (v *formatter_) FormatPackage(package_ PackageLike) string {
+	v.formatPackage(package_)
 	return v.getResult()
 }
 
@@ -308,12 +308,6 @@ func (v *formatter_) formatConstructors(constructors ConstructorsLike) {
 	}
 }
 
-func (v *formatter_) formatNotice(notice NoticeLike) {
-	var comment = notice.GetComment()
-	comment = v.fixComment(comment)
-	v.appendString(comment)
-}
-
 func (v *formatter_) formatDeclaration(declaration DeclarationLike) {
 	v.appendNewline()
 	var comment = declaration.GetComment()
@@ -388,26 +382,6 @@ func (v *formatter_) formatFunctionals(functionals FunctionalsLike) {
 		var functional = iterator.GetNext()
 		v.formatFunctional(functional)
 		v.appendNewline()
-	}
-}
-
-func (v *formatter_) formatPackage(package_ PackageLike) {
-	var notice = package_.GetNotice()
-	v.formatNotice(notice)
-	var header = package_.GetHeader()
-	v.formatHeader(header)
-	v.appendNewline()
-	var imports = package_.GetImports()
-	if imports != nil {
-		v.formatImports(imports)
-	}
-	var types = package_.GetTypes()
-	if types != nil {
-		v.formatTypes(types)
-	}
-	var interfaces = package_.GetInterfaces()
-	if interfaces != nil {
-		v.formatInterfaces(interfaces)
 	}
 }
 
@@ -541,6 +515,32 @@ func (v *formatter_) formatModules(modules ModulesLike) {
 	}
 	v.depth--
 	v.appendNewline()
+}
+
+func (v *formatter_) formatNotice(notice NoticeLike) {
+	var comment = notice.GetComment()
+	comment = v.fixComment(comment)
+	v.appendString(comment)
+}
+
+func (v *formatter_) formatPackage(package_ PackageLike) {
+	var notice = package_.GetNotice()
+	v.formatNotice(notice)
+	var header = package_.GetHeader()
+	v.formatHeader(header)
+	v.appendNewline()
+	var imports = package_.GetImports()
+	if imports != nil {
+		v.formatImports(imports)
+	}
+	var types = package_.GetTypes()
+	if types != nil {
+		v.formatTypes(types)
+	}
+	var interfaces = package_.GetInterfaces()
+	if interfaces != nil {
+		v.formatInterfaces(interfaces)
+	}
 }
 
 func (v *formatter_) formatParameter(parameter ParameterLike) {

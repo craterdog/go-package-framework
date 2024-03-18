@@ -687,8 +687,8 @@ type FormatterLike interface {
 	// Methods
 	FormatAbstraction(abstraction AbstractionLike) string
 	FormatArguments(arguments ArgumentsLike) string
-	FormatPackage(package_ PackageLike) string
 	FormatMethod(method MethodLike) string
+	FormatPackage(package_ PackageLike) string
 	FormatParameter(parameter ParameterLike) string
 	FormatParameterNames(parameters ParametersLike) string
 	FormatParameters(parameters ParametersLike) string
