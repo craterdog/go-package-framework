@@ -35,7 +35,7 @@ func TestInitialization(t *tes.T) {
 		panic(err)
 	}
 
-	var notice = "Copyright (c) 2024 ACME Inc,  All Rights Reserved."
+	var notice string
 	generator.GeneratePackage(directoryName, notice)
 }
 

@@ -17,6 +17,7 @@ import (
 	col "github.com/craterdog/go-collection-framework/v3"
 	osx "os"
 	sts "strings"
+	tim "time"
 	uni "unicode"
 )
 
@@ -716,8 +717,18 @@ func (v *generator_) parseModel(directory string, copyright string) PackageLike 
 		var maximum = 78
 		var length = len(copyright)
 		if length > maximum {
-			copyright = copyright[:maximum]
-			length = maximum
+			var message = fmt.Sprintf(
+				"The copyright notice cannot be longer than 78 characters: %v",
+				copyright,
+			)
+			panic(message)
+		}
+		if length == 0 {
+			copyright = fmt.Sprintf(
+				"Copyright (c) %v.  All Rights Reserved.",
+				tim.Now().Year(),
+			)
+			length = len(copyright)
 		}
 		var padding = (maximum - length) / 2
 		for range padding {
