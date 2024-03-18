@@ -751,6 +751,8 @@ func (v *generator_) parseModel(directory string, copyright string) PackageLike 
 	var source = string(bytes)
 	var parser = Parser().Make()
 	var package_ = parser.ParseSource(source)
+	var validator = Validator().Make()
+	validator.ValidatePackage(package_)
 	return package_
 }
 
