@@ -21,11 +21,12 @@ import (
 )
 
 const generatedDirectory = "./generated/"
+const packageName = "example"
 
 func TestInitialization(t *tes.T) {
 	var generator = pac.Generator().Make()
 
-	var directoryName = generatedDirectory + "new/"
+	var directoryName = generatedDirectory + packageName + "/"
 	var err = osx.RemoveAll(directoryName)
 	if err != nil {
 		panic(err)
@@ -36,7 +37,7 @@ func TestInitialization(t *tes.T) {
 	}
 
 	var notice string
-	generator.CreatePackage(directoryName, notice)
+	generator.CreateModel(directoryName, packageName, notice)
 }
 
 func TestGeneration(t *tes.T) {
@@ -48,7 +49,7 @@ func TestGeneration(t *tes.T) {
 	}
 
 	for _, file := range files {
-		var fileSuffix = ".gopn"
+		var fileSuffix = ".gomn"
 		var fileName = sts.TrimSuffix(file.Name(), fileSuffix)
 		fmt.Println(fileName)
 		var bytes, err = osx.ReadFile(testDirectory + file.Name())
@@ -64,7 +65,7 @@ func TestGeneration(t *tes.T) {
 		if err != nil {
 			panic(err)
 		}
-		err = osx.WriteFile(directoryName+"Model.go", bytes, 0644)
+		err = osx.WriteFile(directoryName+"Package.go", bytes, 0644)
 		if err != nil {
 			panic(err)
 		}

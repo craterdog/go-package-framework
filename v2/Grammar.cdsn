@@ -11,8 +11,8 @@
 <!
 
 !>
-    GO PACKAGE NOTATION
-    This document is a formal definition of Go Package Notation™ (GoPN) using
+    GO MODEL NOTATION
+    This document is a formal definition of Go Model Notation™ (GoMN) using
     Crater Dog Syntax Notation™ (CDSN).  A language grammar consists of a set of
     token and rule definitions.
 
@@ -69,9 +69,9 @@ $TEXT: '"' ANY* '"'  ! Chooses the shortest possible match.
     resulting in a single token.  Rule inversions cannot be nested.
 <!
 
-$source: package EOF  ! Terminated with an end-of-file marker.
+$source: model EOF  ! Terminated with an end-of-file marker.
 
-$package: notice header imports? types? interfaces?
+$model: notice header imports? types? interfaces?
 
 $notice: COMMENT
 

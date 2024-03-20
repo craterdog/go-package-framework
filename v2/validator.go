@@ -70,11 +70,11 @@ type validator_ struct {
 
 // Public
 
-func (v *validator_) ValidatePackage(package_ PackageLike) {
+func (v *validator_) ValidateModel(model ModelLike) {
 	// Extract the catalogs.
-	v.extractImports(package_)
-	v.extractTypes(package_)
-	v.extractInterfaces(package_)
+	v.extractImports(model)
+	v.extractTypes(model)
+	v.extractInterfaces(model)
 
 	// Validate the catalogs.
 	v.validateModules()
@@ -129,8 +129,8 @@ func (v *validator_) extractFunctionals(types TypesLike) {
 	}
 }
 
-func (v *validator_) extractImports(package_ PackageLike) {
-	var imports = package_.GetImports()
+func (v *validator_) extractImports(model ModelLike) {
+	var imports = model.GetImports()
 	if imports == nil {
 		return
 	}
@@ -152,8 +152,8 @@ func (v *validator_) extractInstances(interfaces InterfacesLike) {
 	}
 }
 
-func (v *validator_) extractInterfaces(package_ PackageLike) {
-	var interfaces = package_.GetInterfaces()
+func (v *validator_) extractInterfaces(model ModelLike) {
+	var interfaces = model.GetInterfaces()
 	if interfaces == nil {
 		return
 	}
@@ -189,8 +189,8 @@ func (v *validator_) extractSpecializations(types TypesLike) {
 	}
 }
 
-func (v *validator_) extractTypes(package_ PackageLike) {
-	var types = package_.GetTypes()
+func (v *validator_) extractTypes(model ModelLike) {
+	var types = model.GetTypes()
 	if types == nil {
 		return
 	}

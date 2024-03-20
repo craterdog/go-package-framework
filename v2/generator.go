@@ -61,8 +61,8 @@ type generator_ struct {
 
 // Public
 
-func (v *generator_) CreatePackage(directory string, copyright string) {
-	// Center the copyright string.
+func (v *generator_) CreateModel(directory string, name string, copyright string) {
+	// Center and insert the copyright notice into the model template.
 	var maximum = 78
 	var length = len(copyright)
 	if length > maximum {
@@ -88,11 +88,12 @@ func (v *generator_) CreatePackage(directory string, copyright string) {
 	}
 	copyright = "." + copyright + "."
 	var template = sts.ReplaceAll(modelTemplate_, "<Copyright>", copyright)
+	template = sts.ReplaceAll(template, "<packagename>", name)
 	var bytes = []byte(template[1:]) // Remove leading "\n".
 
-	// Save the new package template.
+	// Save the new model template.
 	v.createDirectory(directory)
-	var modelFile = directory + "Model.go"
+	var modelFile = directory + "Package.go"
 	fmt.Printf(
 		"The model file %q does not exist, creating a template for it.\n",
 		modelFile,
@@ -107,12 +108,12 @@ func (v *generator_) GeneratePackage(directory string) {
 	if !sts.HasSuffix(directory, "/") {
 		directory += "/"
 	}
-	var package_ = v.parseModel(directory)
-	if package_ == nil {
+	var model = v.parseModel(directory)
+	if model == nil {
 		return
 	}
-	v.generateModel(directory, package_)
-	v.generateClasses(directory, package_)
+	v.generateModel(directory, model)
+	v.generateClasses(directory, model)
 }
 
 // Private
@@ -266,7 +267,7 @@ func (v *generator_) generateAbstractionMethods(
 }
 
 func (v *generator_) generateAbstractions(
-	package_ PackageLike,
+	model ModelLike,
 	instanceInterface InstanceLike,
 ) string {
 	var formatter = Formatter().Make()
@@ -284,7 +285,7 @@ func (v *generator_) generateAbstractions(
 		var methods string
 		if prefix == nil {
 			// We only know the method signatures for the local aspects.
-			var aspect = v.retrieveAspect(package_, identifier)
+			var aspect = v.retrieveAspect(model, identifier)
 			methods = v.generateAbstractionMethods(aspect, abstraction)
 		}
 		var instanceAspect = instanceAspectTemplate_
@@ -375,16 +376,16 @@ func (v *generator_) generateAttributeMethods(instanceInterface InstanceLike) st
 
 func (v *generator_) generateClass(
 	directory string,
-	package_ PackageLike,
+	model ModelLike,
 	classInterface ClassLike,
 	instanceInterface InstanceLike,
 ) {
 	var class = classTemplate_
 
-	var notice = package_.GetNotice().GetComment()
+	var notice = model.GetNotice().GetComment()
 	class = sts.ReplaceAll(class, "<Notice>", notice)
 
-	var header = v.generateHeader(package_)
+	var header = v.generateHeader(model)
 	class = sts.ReplaceAll(class, "<Header>", header)
 
 	var classAccess = v.generateClassAccess(classInterface)
@@ -394,7 +395,7 @@ func (v *generator_) generateClass(
 	class = sts.ReplaceAll(class, "<Class>", classMethods)
 
 	var instanceMethods = v.generateInstanceMethods(
-		package_,
+		model,
 		classInterface,
 		instanceInterface,
 	)
@@ -417,7 +418,7 @@ func (v *generator_) generateClass(
 	class = sts.ReplaceAll(class, "[<Parameters>]", parameters)
 	class = sts.ReplaceAll(class, "[<Arguments>]", arguments)
 
-	var imports = v.generateImports(package_, class)
+	var imports = v.generateImports(model, class)
 	class = sts.ReplaceAll(class, "<Imports>", imports)
 
 	var fileName = sts.ToLower(className)
@@ -425,8 +426,8 @@ func (v *generator_) generateClass(
 	v.outputClass(classFile, class)
 }
 
-func (v *generator_) generateClasses(directory string, package_ PackageLike) {
-	var interfaces = package_.GetInterfaces()
+func (v *generator_) generateClasses(directory string, model ModelLike) {
+	var interfaces = model.GetInterfaces()
 	if interfaces == nil {
 		return
 	}
@@ -440,7 +441,7 @@ func (v *generator_) generateClasses(directory string, package_ PackageLike) {
 	for classIterator.HasNext() {
 		var classInterface = classIterator.GetNext()
 		var instanceInterface = instanceIterator.GetNext()
-		v.generateClass(directory, package_, classInterface, instanceInterface)
+		v.generateClass(directory, model, classInterface, instanceInterface)
 	}
 }
 
@@ -585,17 +586,17 @@ func (v *generator_) generateFunctionMethods(classInterface ClassLike) string {
 	return methods
 }
 
-func (v *generator_) generateHeader(package_ PackageLike) string {
-	var packageName = package_.GetHeader().GetIdentifier()
+func (v *generator_) generateHeader(model ModelLike) string {
+	var packageName = model.GetHeader().GetIdentifier()
 	var header = headerTemplate_
 	header = sts.ReplaceAll(header, "<PackageName>", packageName) + "\n"
 	return header
 }
 
-func (v *generator_) generateImports(package_ PackageLike, class string) string {
+func (v *generator_) generateImports(model ModelLike, class string) string {
 	var imports string
 	var modules string
-	var packageImports = package_.GetImports()
+	var packageImports = model.GetImports()
 	if packageImports != nil {
 		var packageModules = packageImports.GetModules()
 		if packageModules != nil {
@@ -649,7 +650,7 @@ func (v *generator_) generateInstanceAttributes(
 }
 
 func (v *generator_) generateInstanceMethods(
-	package_ PackageLike,
+	model ModelLike,
 	classInterface ClassLike,
 	instanceInterface InstanceLike,
 ) string {
@@ -658,7 +659,7 @@ func (v *generator_) generateInstanceMethods(
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Target>", target)
 	var attributes = v.generateAttributeMethods(instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Attributes>", attributes)
-	var abstractions = v.generateAbstractions(package_, instanceInterface)
+	var abstractions = v.generateAbstractions(model, instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Abstractions>", abstractions)
 	var methods = v.generatePublicMethods(instanceInterface)
 	instanceMethods = sts.ReplaceAll(instanceMethods, "<Methods>", methods)
@@ -675,11 +676,11 @@ func (v *generator_) generateInstanceTarget(
 	return target
 }
 
-func (v *generator_) generateModel(directory string, package_ PackageLike) {
+func (v *generator_) generateModel(directory string, model ModelLike) {
 	var formatter = Formatter().Make()
-	var source = formatter.FormatPackage(package_)
+	var source = formatter.FormatModel(model)
 	var bytes = []byte(source)
-	var modelFile = directory + "Model.go"
+	var modelFile = directory + "Package.go"
 	var err = osx.WriteFile(modelFile, bytes, 0644)
 	if err != nil {
 		panic(err)
@@ -745,8 +746,8 @@ func (v *generator_) outputClass(classFile, class string) {
 	}
 }
 
-func (v *generator_) parseModel(directory string) PackageLike {
-	var modelFile = directory + "Model.go"
+func (v *generator_) parseModel(directory string) ModelLike {
+	var modelFile = directory + "Package.go"
 	var bytes, err = osx.ReadFile(modelFile)
 	if err != nil {
 		var message = fmt.Sprintf(
@@ -757,10 +758,10 @@ func (v *generator_) parseModel(directory string) PackageLike {
 	}
 	var source = string(bytes)
 	var parser = Parser().Make()
-	var package_ = parser.ParseSource(source)
+	var model = parser.ParseSource(source)
 	var validator = Validator().Make()
-	validator.ValidatePackage(package_)
-	return package_
+	validator.ValidateModel(model)
+	return model
 }
 
 func (v *generator_) replaceGenericType(
@@ -850,10 +851,10 @@ func (v *generator_) replaceResultTypes(
 }
 
 func (v *generator_) retrieveAspect(
-	package_ PackageLike,
+	model ModelLike,
 	identifier string,
 ) AspectLike {
-	var iterator = package_.GetInterfaces().GetAspects().GetSequence().GetIterator()
+	var iterator = model.GetInterfaces().GetAspects().GetSequence().GetIterator()
 	for iterator.HasNext() {
 		var aspect = iterator.GetNext()
 		var declaration = aspect.GetDeclaration()

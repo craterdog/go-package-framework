@@ -12,8 +12,8 @@
 
 /*
 Package packages provides the ability to generate Go class files based on a
-Go Model.go file that follows the format shown in the following code template:
-  - https://github.com/craterdog/go-package-framework/blob/main/packages/Model.go
+Go Package.go file that follows the format shown in the following code template:
+  - https://github.com/craterdog/go-package-framework/blob/main/packages/Package.go
 
 This package follows the Crater Dog Technologies™ Go Coding Conventions located
 here:
@@ -288,10 +288,10 @@ type GeneratorClassLike interface {
 }
 
 /*
-PackageClassLike defines the set of class constants, constructors and functions
+ModelClassLike defines the set of class constants, constructors and functions
 that must be supported by all package-class-like classes.
 */
-type PackageClassLike interface {
+type ModelClassLike interface {
 	// Constructors
 	MakeWithAttributes(
 		notice NoticeLike,
@@ -299,7 +299,7 @@ type PackageClassLike interface {
 		imports ImportsLike,
 		types TypesLike,
 		interfaces InterfacesLike,
-	) PackageLike
+	) ModelLike
 }
 
 /*
@@ -688,7 +688,7 @@ type FormatterLike interface {
 	FormatAbstraction(abstraction AbstractionLike) string
 	FormatArguments(arguments ArgumentsLike) string
 	FormatMethod(method MethodLike) string
-	FormatPackage(package_ PackageLike) string
+	FormatModel(model ModelLike) string
 	FormatParameter(parameter ParameterLike) string
 	FormatParameterNames(parameters ParametersLike) string
 	FormatParameters(parameters ParametersLike) string
@@ -741,15 +741,15 @@ supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	CreatePackage(directory string, copyright string)
+	CreateModel(directory string, name string, copyright string)
 	GeneratePackage(directory string)
 }
 
 /*
-PackageLike defines the set of abstractions and methods that must be supported by
+ModelLike defines the set of abstractions and methods that must be supported by
 all package-like instances.
 */
-type PackageLike interface {
+type ModelLike interface {
 	// Attributes
 	GetNotice() NoticeLike
 	GetHeader() HeaderLike
@@ -882,7 +882,7 @@ all parser-like instances.
 */
 type ParserLike interface {
 	// Methods
-	ParseSource(source string) PackageLike
+	ParseSource(source string) ModelLike
 }
 
 /*
@@ -960,7 +960,7 @@ supported by all validator-like instances.
 */
 type ValidatorLike interface {
 	// Methods
-	ValidatePackage(package_ PackageLike)
+	ValidateModel(model ModelLike)
 }
 
 /*

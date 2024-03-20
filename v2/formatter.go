@@ -71,8 +71,8 @@ func (v *formatter_) FormatMethod(method MethodLike) string {
 	return v.getResult()
 }
 
-func (v *formatter_) FormatPackage(package_ PackageLike) string {
-	v.formatPackage(package_)
+func (v *formatter_) FormatModel(model ModelLike) string {
+	v.formatModel(model)
 	return v.getResult()
 }
 
@@ -523,21 +523,21 @@ func (v *formatter_) formatNotice(notice NoticeLike) {
 	v.appendString(comment)
 }
 
-func (v *formatter_) formatPackage(package_ PackageLike) {
-	var notice = package_.GetNotice()
+func (v *formatter_) formatModel(model ModelLike) {
+	var notice = model.GetNotice()
 	v.formatNotice(notice)
-	var header = package_.GetHeader()
+	var header = model.GetHeader()
 	v.formatHeader(header)
 	v.appendNewline()
-	var imports = package_.GetImports()
+	var imports = model.GetImports()
 	if imports != nil {
 		v.formatImports(imports)
 	}
-	var types = package_.GetTypes()
+	var types = model.GetTypes()
 	if types != nil {
 		v.formatTypes(types)
 	}
-	var interfaces = package_.GetInterfaces()
+	var interfaces = model.GetInterfaces()
 	if interfaces != nil {
 		v.formatInterfaces(interfaces)
 	}

@@ -62,19 +62,19 @@ type parser_ struct {
 
 // Public
 
-func (v *parser_) ParseSource(source string) PackageLike {
+func (v *parser_) ParseSource(source string) ModelLike {
 	// The scanner runs in a separate Go routine.
 	v.source_ = sts.ReplaceAll(source, "\t", "    ") // F'ing tabs!
 	v.tokens_ = col.Queue[TokenLike]().MakeWithCapacity(parserClass.queueSize_)
 	Scanner().MakeFromSource(v.source_, v.tokens_)
 
-	// Attempt to parse Package.
-	var package_, token, ok = v.parsePackage()
+	// Attempt to parse the model.
+	var model, token, ok = v.parseModel()
 	if !ok {
 		var message = v.formatError(token)
-		message += v.generateGrammar("package",
+		message += v.generateGrammar("model",
 			"$source",
-			"$package",
+			"$model",
 		)
 		panic(message)
 	}
@@ -85,13 +85,13 @@ func (v *parser_) ParseSource(source string) PackageLike {
 		var message = v.formatError(token)
 		message += v.generateGrammar("EOF",
 			"$source",
-			"$package",
+			"$model",
 		)
 		panic(message)
 	}
 
-	// Found Package.
-	return package_
+	// Found a model.
+	return model
 }
 
 // Private
@@ -1632,8 +1632,8 @@ func (v *parser_) parseNotice() (
 	return notice, token, true
 }
 
-func (v *parser_) parsePackage() (
-	package_ PackageLike,
+func (v *parser_) parseModel() (
+	model ModelLike,
 	token TokenLike,
 	ok bool,
 ) {
@@ -1646,8 +1646,8 @@ func (v *parser_) parsePackage() (
 	// Attempt to parse a notice.
 	notice, token, ok = v.parseNotice()
 	if !ok {
-		// This is not Package.
-		return package_, token, false
+		// This is not model.
+		return model, token, false
 	}
 
 	// Attempt to parse a header.
@@ -1655,7 +1655,7 @@ func (v *parser_) parsePackage() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("header",
-			"$package",
+			"$model",
 			"$notice",
 			"$header",
 			"$imports",
@@ -1674,9 +1674,9 @@ func (v *parser_) parsePackage() (
 	// Attempt to parse an optional sequence of interfaces.
 	interfaces, _, _ = v.parseInterfaces()
 
-	// Found a package.
-	package_ = Package().MakeWithAttributes(notice, header, imports, types, interfaces)
-	return package_, token, true
+	// Found a model.
+	model = Model().MakeWithAttributes(notice, header, imports, types, interfaces)
+	return model, token, true
 }
 
 func (v *parser_) parseParameter() (
@@ -2094,15 +2094,15 @@ var grammar = map[string]string{
 	"$interfaces":      `"// INTERFACES" aspects? classes? instances?`,
 	"$method":          `IDENTIFIER "(" parameters? ")" result?`,
 	"$methods":         `"// Methods" method+`,
+	"$model":           `notice header imports? types? interfaces?`,
 	"$module":          `IDENTIFIER TEXT`,
 	"$modules":         `module+`,
 	"$notice":          `COMMENT`,
-	"$package":         `notice header imports? types? interfaces?`,
 	"$parameter":       `IDENTIFIER abstraction`,
 	"$parameters":      `parameter ("," parameter)* ","?`,
 	"$prefix":          `"[" "]" | "map" "[" IDENTIFIER "]" | "chan" | IDENTIFIER "."`,
 	"$result":          `abstraction | "(" parameters ")"`,
-	"$source":          `package EOF  ! Terminated with an end-of-file marker.`,
+	"$source":          `model EOF  ! Terminated with an end-of-file marker.`,
 	"$specialization":  `declaration abstraction enumeration?`,
 	"$specializations": `"// Specializations" specialization+`,
 	"$types":           `"// TYPES" specializations? functionals?`,

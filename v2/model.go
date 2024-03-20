@@ -18,21 +18,21 @@ import ()
 
 // Reference
 
-var packageClass = &packageClass_{
+var modelClass = &modelClass_{
 	// TBA - Assign constant values.
 }
 
 // Function
 
-func Package() PackageClassLike {
-	return packageClass
+func Model() ModelClassLike {
+	return modelClass
 }
 
 // CLASS METHODS
 
 // Target
 
-type packageClass_ struct {
+type modelClass_ struct {
 	// TBA - Add private class constants.
 }
 
@@ -40,14 +40,14 @@ type packageClass_ struct {
 
 // Constructors
 
-func (c *packageClass_) MakeWithAttributes(
+func (c *modelClass_) MakeWithAttributes(
 	notice NoticeLike,
 	header HeaderLike,
 	imports ImportsLike,
 	types TypesLike,
 	interfaces InterfacesLike,
-) PackageLike {
-	return &package_{
+) ModelLike {
+	return &model_{
 		notice_:     notice,
 		header_:     header,
 		imports_:    imports,
@@ -62,7 +62,7 @@ func (c *packageClass_) MakeWithAttributes(
 
 // Target
 
-type package_ struct {
+type model_ struct {
 	notice_     NoticeLike
 	header_     HeaderLike
 	imports_    ImportsLike
@@ -72,23 +72,23 @@ type package_ struct {
 
 // Attributes
 
-func (v *package_) GetNotice() NoticeLike {
+func (v *model_) GetNotice() NoticeLike {
 	return v.notice_
 }
 
-func (v *package_) GetHeader() HeaderLike {
+func (v *model_) GetHeader() HeaderLike {
 	return v.header_
 }
 
-func (v *package_) GetImports() ImportsLike {
+func (v *model_) GetImports() ImportsLike {
 	return v.imports_
 }
 
-func (v *package_) GetInterfaces() InterfacesLike {
+func (v *model_) GetInterfaces() InterfacesLike {
 	return v.interfaces_
 }
 
-func (v *package_) GetTypes() TypesLike {
+func (v *model_) GetTypes() TypesLike {
 	return v.types_
 }
 

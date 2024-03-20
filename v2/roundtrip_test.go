@@ -34,16 +34,16 @@ func TestRoundtrips(t *tes.T) {
 		var validator = pac.Validator().Make()
 		var formatter = pac.Formatter().Make()
 		var filename = testDirectory + file.Name()
-		if sts.HasSuffix(filename, ".gopn") {
+		if sts.HasSuffix(filename, ".gomn") {
 			fmt.Println(filename)
 			var bytes, err = osx.ReadFile(filename)
 			if err != nil {
 				panic(err)
 			}
 			var expected = string(bytes)
-			var package_ = parser.ParseSource(expected)
-			validator.ValidatePackage(package_)
-			var actual = formatter.FormatPackage(package_)
+			var model = parser.ParseSource(expected)
+			validator.ValidateModel(model)
+			var actual = formatter.FormatModel(model)
 			ass.Equal(t, expected, actual)
 		}
 	}
