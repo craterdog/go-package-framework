@@ -36,8 +36,8 @@ func TestInitialization(t *tes.T) {
 		panic(err)
 	}
 
-	var notice string
-	generator.CreateModel(directoryName, packageName, notice)
+	var copyright string
+	generator.CreateModel(directoryName, packageName, copyright)
 }
 
 func TestGeneration(t *tes.T) {
