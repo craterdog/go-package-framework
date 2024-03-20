@@ -11,8 +11,8 @@
 */
 
 /*
-Package packages provides the ability to generate Go class files based on a
-Go Package.go file that follows the format shown in the following code template:
+Package packages provides the ability to generate Go class files based on a Go
+Package.go file that follows the format shown in the following code template:
   - https://github.com/craterdog/go-package-framework/blob/main/packages/Package.go
 
 This package follows the Crater Dog Technologies™ Go Coding Conventions located

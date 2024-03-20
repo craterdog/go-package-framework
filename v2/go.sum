@@ -1,5 +1,5 @@
-github.com/craterdog/go-collection-framework/v3 v3.7.2 h1:XZwGWWROhoTKzMUwTMsUl0fDSfUNoAOmf06kbSZ7Hjc=
-github.com/craterdog/go-collection-framework/v3 v3.7.2/go.mod h1:HEDpP5tO8AdzuCIOJds67vAQk2YYacFQChxDLfHJTIM=
+github.com/craterdog/go-collection-framework/v3 v3.7.3 h1:aHB8BIIg1r19jaF4euOqW2Qx35mmNdkCTi5Z5lEVOjA=
+github.com/craterdog/go-collection-framework/v3 v3.7.3/go.mod h1:HEDpP5tO8AdzuCIOJds67vAQk2YYacFQChxDLfHJTIM=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
