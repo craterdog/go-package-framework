@@ -11,7 +11,7 @@
 */
 
 /*
-Package catalogs defines...
+Package "catalogs" defines...
 
 Additional implementations of the classes provided by this package can be
 developed and used seamlessly since the interface definitions only depend on

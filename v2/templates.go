@@ -168,7 +168,7 @@ const modelTemplate_ = `
 */
 
 /*
-Package <packagename> provides...
+Package "<packagename>" provides...
 
 For detailed documentation on this package refer to the wiki:
   - https://github.com/craterdog/<repository-name>/wiki

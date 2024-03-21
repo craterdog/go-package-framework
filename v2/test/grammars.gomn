@@ -11,7 +11,7 @@
 */
 
 /*
-Package grammars provides a parser and formatter for language grammars defined
+Package "grammars" provides a parser and formatter for language grammars defined
 using Crater Dog Syntax Notation™ (CDSN).  The parser performs validation on the
 resulting parse tree.  The formatter takes a validated parse tree and generates
 the corresponding CDSN source using the canonical format.

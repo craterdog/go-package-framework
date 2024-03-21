@@ -11,7 +11,7 @@
 */
 
 /*
-Package queues defines an example of each type of package construct.
+Package "queues" defines an example of each type of package construct.
 
 This package follows the Crater Dog Technologies™ (craterdog) Go Coding
 Conventions located here:
