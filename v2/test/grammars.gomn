@@ -11,7 +11,7 @@
 */
 
 /*
-Package "grammars" provides a parser and formatter for language grammars defined
+Package grammars provides a parser and formatter for language grammars defined
 using Crater Dog Syntax Notation™ (CDSN).  The parser performs validation on the
 resulting parse tree.  The formatter takes a validated parse tree and generates
 the corresponding CDSN source using the canonical format.
@@ -57,7 +57,6 @@ const (
 	NoteToken
 	NumberToken
 	SpaceToken
-	SymbolToken
 )
 
 // INTERFACES
@@ -70,18 +69,7 @@ functions that must be supported by all alternative-class-like classes.
 */
 type AlternativeClassLike interface {
 	// Constructors
-	MakeWithAttributes(factors col.Sequential[FactorLike], note string) AlternativeLike
-}
-
-/*
-AssertionClassLike defines the set of class constants, constructors and
-functions that must be supported by all assertion-class-like classes.
-*/
-type AssertionClassLike interface {
-	// Constructors
-	MakeWithElement(element ElementLike) AssertionLike
-	MakeWithGlyph(glyph GlyphLike) AssertionLike
-	MakeWithPrecedence(precedence PrecedenceLike) AssertionLike
+	MakeWithAttributes(factors col.Sequential[FactorLike]) AlternativeLike
 }
 
 /*
@@ -108,7 +96,11 @@ functions that must be supported by all definition-class-like classes.
 */
 type DefinitionClassLike interface {
 	// Constructors
-	MakeWithAttributes(symbol string, expression ExpressionLike) DefinitionLike
+	MakeWithAttributes(
+		comment string,
+		name string,
+		expression ExpressionLike,
+	) DefinitionLike
 }
 
 /*
@@ -117,7 +109,6 @@ that must be supported by all element-class-like classes.
 */
 type ElementClassLike interface {
 	// Constructors
-	MakeWithIntrinsic(intrinsic string) ElementLike
 	MakeWithLiteral(literal string) ElementLike
 	MakeWithName(name string) ElementLike
 }
@@ -128,7 +119,8 @@ functions that must be supported by all expression-class-like classes.
 */
 type ExpressionClassLike interface {
 	// Constructors
-	MakeWithAttributes(alternatives col.Sequential[AlternativeLike], multilined bool) ExpressionLike
+	MakeWithInline(inline InlineLike) ExpressionLike
+	MakeWithMultiline(multiline MultilineLike) ExpressionLike
 }
 
 /*
@@ -138,6 +130,16 @@ that must be supported by all factor-class-like classes.
 type FactorClassLike interface {
 	// Constructors
 	MakeWithAttributes(predicate PredicateLike, cardinality CardinalityLike) FactorLike
+}
+
+/*
+FilterClassLike defines the set of class constants, constructors and functions
+that must be supported by all filter-class-like classes.
+*/
+type FilterClassLike interface {
+	// Constructors
+	MakeWithGlyph(glyph GlyphLike, inverted bool) FilterLike
+	MakeWithIntrinsic(intrinsic string, inverted bool) FilterLike
 }
 
 /*
@@ -173,7 +175,43 @@ that must be supported by all grammar-class-like classes.
 */
 type GrammarClassLike interface {
 	// Constructors
-	MakeWithAttributes(comment string, statements col.Sequential[StatementLike]) GrammarLike
+	MakeWithAttributes(headers col.Sequential[HeaderLike], definitions col.Sequential[DefinitionLike]) GrammarLike
+}
+
+/*
+HeaderClassLike defines the set of class constants, constructors and functions
+that must be supported by all header-class-like classes.
+*/
+type HeaderClassLike interface {
+	// Constructors
+	MakeWithAttributes(comment string) HeaderLike
+}
+
+/*
+InlineClassLike defines the set of class constants, constructors and functions
+that must be supported by all inline-class-like classes.
+*/
+type InlineClassLike interface {
+	// Constructors
+	MakeWithAttributes(alternatives col.Sequential[AlternativeLike], note string) InlineLike
+}
+
+/*
+LineClassLike defines the set of class constants, constructors and functions
+that must be supported by all line-class-like classes.
+*/
+type LineClassLike interface {
+	// Constructors
+	MakeWithAttributes(alternative AlternativeLike, note string) LineLike
+}
+
+/*
+MultilineClassLike defines the set of class constants, constructors and functions
+that must be supported by all inline-class-like classes.
+*/
+type MultilineClassLike interface {
+	// Constructors
+	MakeWithAttributes(lines col.Sequential[LineLike]) MultilineLike
 }
 
 /*
@@ -200,7 +238,9 @@ functions that must be supported by all predicate-class-like classes.
 */
 type PredicateClassLike interface {
 	// Constructors
-	MakeWithAttributes(assertion AssertionLike, inverted bool) PredicateLike
+	MakeWithElement(element ElementLike) PredicateLike
+	MakeWithFilter(filter FilterLike) PredicateLike
+	MakeWithPrecedence(precedence PrecedenceLike) PredicateLike
 }
 
 /*
@@ -213,15 +253,6 @@ type ScannerClassLike interface {
 
 	// Functions
 	MatchToken(type_ TokenType, text string) col.ListLike[string]
-}
-
-/*
-StatementClassLike defines the set of class constants, constructors and
-functions that must be supported by all statement-class-like classes.
-*/
-type StatementClassLike interface {
-	// Constructors
-	MakeWithAttributes(comment string, definition DefinitionLike) StatementLike
 }
 
 /*
@@ -259,18 +290,6 @@ all alternative-like instances.
 type AlternativeLike interface {
 	// Attributes
 	GetFactors() col.Sequential[FactorLike]
-	GetNote() string
-}
-
-/*
-AssertionLike defines the set of aspects and methods that must be supported by
-all assertion-like instances.
-*/
-type AssertionLike interface {
-	// Attributes
-	GetElement() ElementLike
-	GetGlyph() GlyphLike
-	GetPrecedence() PrecedenceLike
 }
 
 /*
@@ -298,8 +317,9 @@ all definition-like instances.
 */
 type DefinitionLike interface {
 	// Attributes
+	GetComment() string
+	GetName() string
 	GetExpression() ExpressionLike
-	GetSymbol() string
 }
 
 /*
@@ -308,7 +328,6 @@ element-like instances.
 */
 type ElementLike interface {
 	// Attributes
-	GetIntrinsic() string
 	GetLiteral() string
 	GetName() string
 }
@@ -319,8 +338,8 @@ all expression-like instances.
 */
 type ExpressionLike interface {
 	// Attributes
-	GetAlternatives() col.Sequential[AlternativeLike]
-	IsMultilined() bool
+	GetInline() InlineLike
+	GetMultiline() MultilineLike
 }
 
 /*
@@ -329,8 +348,19 @@ factor-like instances.
 */
 type FactorLike interface {
 	// Attributes
-	GetCardinality() CardinalityLike
 	GetPredicate() PredicateLike
+	GetCardinality() CardinalityLike
+}
+
+/*
+FilterLike defines the set of aspects and methods that must be supported by all
+filter-like instances.
+*/
+type FilterLike interface {
+	// Attributes
+	IsInverted() bool
+	GetIntrinsic() string
+	GetGlyph() GlyphLike
 }
 
 /*
@@ -349,7 +379,8 @@ all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	GeneratePackage(directory string)
+	CreateGrammar(directory string, copyright string)
+	GenerateModel(directory string)
 }
 
 /*
@@ -368,8 +399,46 @@ grammar-like instances.
 */
 type GrammarLike interface {
 	// Attributes
+	GetHeaders() col.Sequential[HeaderLike]
+	GetDefinitions() col.Sequential[DefinitionLike]
+}
+
+/*
+HeaderLike defines the set of aspects and methods that must be supported by all
+header-like instances.
+*/
+type HeaderLike interface {
+	// Attributes
 	GetComment() string
-	GetStatements() col.Sequential[StatementLike]
+}
+
+/*
+InlineLike defines the set of aspects and methods that must be supported by all
+inline-like instances.
+*/
+type InlineLike interface {
+	// Attributes
+	GetAlternatives() col.Sequential[AlternativeLike]
+	GetNote() string
+}
+
+/*
+LineLike defines the set of aspects and methods that must be supported by all
+line-like instances.
+*/
+type LineLike interface {
+	// Attributes
+	GetAlternative() AlternativeLike
+	GetNote() string
+}
+
+/*
+MultilineLike defines the set of aspects and methods that must be supported by all
+multiline-like instances.
+*/
+type MultilineLike interface {
+	// Attributes
+	GetLines() col.Sequential[LineLike]
 }
 
 /*
@@ -396,8 +465,9 @@ all predicate-like instances.
 */
 type PredicateLike interface {
 	// Attributes
-	GetAssertion() AssertionLike
-	IsInverted() bool
+	GetElement() ElementLike
+	GetFilter() FilterLike
+	GetPrecedence() PrecedenceLike
 }
 
 /*
@@ -405,16 +475,6 @@ ScannerLike defines the set of aspects and methods that must be supported by all
 scanner-like instances.
 */
 type ScannerLike interface {
-}
-
-/*
-StatementLike defines the set of aspects and methods that must be supported by
-all statement-like instances.
-*/
-type StatementLike interface {
-	// Attributes
-	GetComment() string
-	GetDefinition() DefinitionLike
 }
 
 /*
