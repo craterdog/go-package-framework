@@ -190,9 +190,9 @@ func (v *parser_) parseAbstraction() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("arguments",
-				"$abstraction",
-				"$prefix",
-				"$arguments",
+				"abstraction",
+				"prefix",
+				"arguments",
 			)
 			panic(message)
 		}
@@ -224,9 +224,9 @@ func (v *parser_) parseAbstraction() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("arguments",
-				"$abstraction",
-				"$prefix",
-				"$arguments",
+				"abstraction",
+				"prefix",
+				"arguments",
 			)
 			panic(message)
 		}
@@ -236,9 +236,9 @@ func (v *parser_) parseAbstraction() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("]",
-				"$abstraction",
-				"$prefix",
-				"$arguments",
+				"abstraction",
+				"prefix",
+				"arguments",
 			)
 			panic(message)
 		}
@@ -267,8 +267,8 @@ func (v *parser_) parseAbstractions() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
-			"$abstractions",
-			"$abstraction",
+			"abstractions",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -327,9 +327,9 @@ func (v *parser_) parseAspect() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"interface"`,
-			"$aspect",
-			"$declaration",
-			"$methods",
+			"aspect",
+			"declaration",
+			"methods",
 		)
 		panic(message)
 	}
@@ -339,9 +339,9 @@ func (v *parser_) parseAspect() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("{",
-			"$aspect",
-			"$declaration",
-			"$methods",
+			"aspect",
+			"declaration",
+			"methods",
 		)
 		panic(message)
 	}
@@ -354,9 +354,9 @@ func (v *parser_) parseAspect() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("}",
-			"$aspect",
-			"$declaration",
-			"$methods",
+			"aspect",
+			"declaration",
+			"methods",
 		)
 		panic(message)
 	}
@@ -384,8 +384,8 @@ func (v *parser_) parseAspects() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("aspect",
-			"$aspects",
-			"$aspect",
+			"aspects",
+			"aspect",
 		)
 		panic(message)
 	}
@@ -435,9 +435,9 @@ func (v *parser_) parseAttribute() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$attribute",
-			"$parameter",
-			"$abstraction",
+			"attribute",
+			"parameter",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -450,9 +450,9 @@ func (v *parser_) parseAttribute() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$attribute",
-			"$parameter",
-			"$abstraction",
+			"attribute",
+			"parameter",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -483,8 +483,8 @@ func (v *parser_) parseAttributes() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("attribute",
-			"$attributes",
-			"$attribute",
+			"attributes",
+			"attribute",
 		)
 		panic(message)
 	}
@@ -517,11 +517,11 @@ func (v *parser_) parseClass() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"interface"`,
-			"$class",
-			"$declaration",
-			"$constants",
-			"$constructors",
-			"$functions",
+			"class",
+			"declaration",
+			"constants",
+			"constructors",
+			"functions",
 		)
 		panic(message)
 	}
@@ -531,11 +531,11 @@ func (v *parser_) parseClass() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("{",
-			"$class",
-			"$declaration",
-			"$constants",
-			"$constructors",
-			"$functions",
+			"class",
+			"declaration",
+			"constants",
+			"constructors",
+			"functions",
 		)
 		panic(message)
 	}
@@ -554,11 +554,11 @@ func (v *parser_) parseClass() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("}",
-			"$class",
-			"$declaration",
-			"$constants",
-			"$constructors",
-			"$functions",
+			"class",
+			"declaration",
+			"constants",
+			"constructors",
+			"functions",
 		)
 		panic(message)
 	}
@@ -586,8 +586,8 @@ func (v *parser_) parseClasses() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("class",
-			"$classes",
-			"$class",
+			"classes",
+			"class",
 		)
 		panic(message)
 	}
@@ -639,8 +639,8 @@ func (v *parser_) parseConstant() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$constant",
-			"$abstraction",
+			"constant",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -650,8 +650,8 @@ func (v *parser_) parseConstant() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$constant",
-			"$abstraction",
+			"constant",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -662,8 +662,8 @@ func (v *parser_) parseConstant() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
-			"$constant",
-			"$abstraction",
+			"constant",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -691,8 +691,8 @@ func (v *parser_) parseConstants() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("constant",
-			"$constants",
-			"$constant",
+			"constants",
+			"constant",
 		)
 		panic(message)
 	}
@@ -725,9 +725,9 @@ func (v *parser_) parseConstructor() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$constructor",
-			"$parameters",
-			"$abstraction",
+			"constructor",
+			"parameters",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -740,9 +740,9 @@ func (v *parser_) parseConstructor() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$constructor",
-			"$parameters",
-			"$abstraction",
+			"constructor",
+			"parameters",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -753,9 +753,9 @@ func (v *parser_) parseConstructor() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
-			"$constructor",
-			"$parameters",
-			"$abstraction",
+			"constructor",
+			"parameters",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -783,8 +783,8 @@ func (v *parser_) parseConstructors() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("constructor",
-			"$constructors",
-			"$constructor",
+			"constructors",
+			"constructor",
 		)
 		panic(message)
 	}
@@ -834,8 +834,8 @@ func (v *parser_) parseDeclaration() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"type"`,
-			"$declaration",
-			"$parameters",
+			"declaration",
+			"parameters",
 		)
 		panic(message)
 	}
@@ -845,9 +845,9 @@ func (v *parser_) parseDeclaration() (
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		var message = v.formatError(token)
-		message += v.generateGrammar("IDENTIFIER",
-			"$declaration",
-			"$parameters",
+		message += v.generateGrammar("Identifier",
+			"declaration",
+			"parameters",
 		)
 		panic(message)
 	}
@@ -860,8 +860,8 @@ func (v *parser_) parseDeclaration() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("parameters",
-				"$declaration",
-				"$parameters",
+				"declaration",
+				"parameters",
 			)
 			panic(message)
 		}
@@ -869,8 +869,8 @@ func (v *parser_) parseDeclaration() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("]",
-				"$declaration",
-				"$parameters",
+				"declaration",
+				"parameters",
 			)
 			panic(message)
 		}
@@ -898,8 +898,8 @@ func (v *parser_) parseEnumeration() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$enumeration",
-			"$values",
+			"enumeration",
+			"values",
 		)
 		panic(message)
 	}
@@ -910,8 +910,8 @@ func (v *parser_) parseEnumeration() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("values",
-			"$enumeration",
-			"$values",
+			"enumeration",
+			"values",
 		)
 		panic(message)
 	}
@@ -921,8 +921,8 @@ func (v *parser_) parseEnumeration() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$enumeration",
-			"$values",
+			"enumeration",
+			"values",
 		)
 		panic(message)
 	}
@@ -950,9 +950,9 @@ func (v *parser_) parseFunction() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$function",
-			"$parameters",
-			"$result",
+			"function",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -965,9 +965,9 @@ func (v *parser_) parseFunction() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$function",
-			"$parameters",
-			"$result",
+			"function",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -978,9 +978,9 @@ func (v *parser_) parseFunction() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("result",
-			"$function",
-			"$parameters",
-			"$result",
+			"function",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1008,8 +1008,8 @@ func (v *parser_) parseFunctions() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("function",
-			"$functions",
-			"$function",
+			"functions",
+			"function",
 		)
 		panic(message)
 	}
@@ -1059,10 +1059,10 @@ func (v *parser_) parseFunctional() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"func"`,
-			"$functional",
-			"$declaration",
-			"$parameters",
-			"$result",
+			"functional",
+			"declaration",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1072,10 +1072,10 @@ func (v *parser_) parseFunctional() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$functional",
-			"$declaration",
-			"$parameters",
-			"$result",
+			"functional",
+			"declaration",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1088,10 +1088,10 @@ func (v *parser_) parseFunctional() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$functional",
-			"$declaration",
-			"$parameters",
-			"$result",
+			"functional",
+			"declaration",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1102,10 +1102,10 @@ func (v *parser_) parseFunctional() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("result",
-			"$functional",
-			"$declaration",
-			"$parameters",
-			"$result",
+			"functional",
+			"declaration",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1133,8 +1133,8 @@ func (v *parser_) parseFunctionals() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("functional",
-			"$functionals",
-			"$functional",
+			"functionals",
+			"functional",
 		)
 		panic(message)
 	}
@@ -1184,7 +1184,7 @@ func (v *parser_) parseHeader() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"package"`,
-			"$header",
+			"header",
 		)
 		panic(message)
 	}
@@ -1194,8 +1194,8 @@ func (v *parser_) parseHeader() (
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		var message = v.formatError(token)
-		message += v.generateGrammar(`"IDENTIFIER"`,
-			"$header",
+		message += v.generateGrammar(`"Identifier"`,
+			"header",
 		)
 		panic(message)
 	}
@@ -1222,8 +1222,8 @@ func (v *parser_) parseImports() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$imports",
-			"$module",
+			"imports",
+			"module",
 		)
 		panic(message)
 	}
@@ -1236,8 +1236,8 @@ func (v *parser_) parseImports() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$imports",
-			"$module",
+			"imports",
+			"module",
 		)
 		panic(message)
 	}
@@ -1265,11 +1265,11 @@ func (v *parser_) parseInstance() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"interface"`,
-			"$instance",
-			"$declaration",
-			"$attributes",
-			"$abstractions",
-			"$methods",
+			"instance",
+			"declaration",
+			"attributes",
+			"abstractions",
+			"methods",
 		)
 		panic(message)
 	}
@@ -1279,11 +1279,11 @@ func (v *parser_) parseInstance() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("{",
-			"$instance",
-			"$declaration",
-			"$attributes",
-			"$abstractions",
-			"$methods",
+			"instance",
+			"declaration",
+			"attributes",
+			"abstractions",
+			"methods",
 		)
 		panic(message)
 	}
@@ -1302,11 +1302,11 @@ func (v *parser_) parseInstance() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("}",
-			"$instance",
-			"$declaration",
-			"$attributes",
-			"$abstractions",
-			"$methods",
+			"instance",
+			"declaration",
+			"attributes",
+			"abstractions",
+			"methods",
 		)
 		panic(message)
 	}
@@ -1334,8 +1334,8 @@ func (v *parser_) parseInstances() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("instance",
-			"$instances",
-			"$instance",
+			"instances",
+			"instance",
 		)
 		panic(message)
 	}
@@ -1413,9 +1413,9 @@ func (v *parser_) parseMethod() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("(",
-			"$method",
-			"$parameters",
-			"$result",
+			"method",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1428,9 +1428,9 @@ func (v *parser_) parseMethod() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(")",
-			"$method",
-			"$parameters",
-			"$result",
+			"method",
+			"parameters",
+			"result",
 		)
 		panic(message)
 	}
@@ -1461,8 +1461,8 @@ func (v *parser_) parseMethods() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("method",
-			"$methods",
-			"$method",
+			"methods",
+			"method",
 		)
 		panic(message)
 	}
@@ -1512,8 +1512,8 @@ func (v *parser_) parseModule() (
 	repository, token, ok = v.parseToken(TextToken, "")
 	if !ok {
 		var message = v.formatError(token)
-		message += v.generateGrammar(`"TEXT"`,
-			"$module",
+		message += v.generateGrammar(`"Text"`,
+			"module",
 		)
 		panic(message)
 	}
@@ -1600,12 +1600,12 @@ func (v *parser_) parseModel() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("header",
-			"$model",
-			"$notice",
-			"$header",
-			"$imports",
-			"$types",
-			"$interfaces",
+			"model",
+			"notice",
+			"header",
+			"imports",
+			"types",
+			"interfaces",
 		)
 		panic(message)
 	}
@@ -1643,8 +1643,8 @@ func (v *parser_) parseParameter() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
-			"$parameter",
-			"$abstraction",
+			"parameter",
+			"abstraction",
 		)
 		panic(message)
 	}
@@ -1710,15 +1710,15 @@ func (v *parser_) parsePrefix() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("[",
-				"$prefix",
+				"prefix",
 			)
 			panic(message)
 		}
 		identifier, token, ok = v.parseToken(IdentifierToken, "")
 		if !ok {
 			var message = v.formatError(token)
-			message += v.generateGrammar("IDENTIFIER",
-				"$prefix",
+			message += v.generateGrammar("Identifier",
+				"prefix",
 			)
 			panic(message)
 		}
@@ -1726,7 +1726,7 @@ func (v *parser_) parsePrefix() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("]",
-				"$prefix",
+				"prefix",
 			)
 			panic(message)
 		}
@@ -1783,9 +1783,9 @@ func (v *parser_) parseResult() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar("parameters",
-				"$result",
-				"$abstraction",
-				"$parameters",
+				"result",
+				"abstraction",
+				"parameters",
 			)
 			panic(message)
 		}
@@ -1793,9 +1793,9 @@ func (v *parser_) parseResult() (
 		if !ok {
 			var message = v.formatError(token)
 			message += v.generateGrammar(")",
-				"$result",
-				"$abstraction",
-				"$parameters",
+				"result",
+				"abstraction",
+				"parameters",
 			)
 			panic(message)
 		}
@@ -1828,10 +1828,10 @@ func (v *parser_) parseSpecialization() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("abstraction",
-			"$specialization",
-			"$declaration",
-			"$abstraction",
-			"$enumeration",
+			"specialization",
+			"declaration",
+			"abstraction",
+			"enumeration",
 		)
 		panic(message)
 	}
@@ -1863,8 +1863,8 @@ func (v *parser_) parseSpecializations() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("specialization",
-			"$specializations",
-			"$specialization",
+			"specializations",
+			"specialization",
 		)
 		panic(message)
 	}
@@ -1959,8 +1959,8 @@ func (v *parser_) parseValues() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("values",
-			"$values",
-			"$parameter",
+			"values",
+			"parameter",
 		)
 		panic(message)
 	}
@@ -1970,8 +1970,8 @@ func (v *parser_) parseValues() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("=",
-			"$values",
-			"$parameter",
+			"values",
+			"parameter",
 		)
 		panic(message)
 	}
@@ -1981,8 +1981,8 @@ func (v *parser_) parseValues() (
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("iota",
-			"$values",
-			"$parameter",
+			"values",
+			"parameter",
 		)
 		panic(message)
 	}
@@ -2005,43 +2005,43 @@ func (v *parser_) putBack(token TokenLike) {
 }
 
 var grammar = map[string]string{
-	"$abstraction":     `prefix? IDENTIFIER ("[" arguments "]")?`,
-	"$abstractions":    `"// Abstractions" abstraction+`,
-	"$arguments":       `abstraction ("," abstraction)* ","?`,
-	"$aspect":          `declaration "interface" "{" methods? "}"`,
-	"$aspects":         `"// Aspects" aspect+`,
-	"$attribute":       `IDENTIFIER "(" parameter? ")" abstraction?`,
-	"$attributes":      `"// Attributes" attribute+`,
-	"$class":           `declaration "interface" "{" constants? constructors? functions? "}"`,
-	"$classes":         `"// Classes" class+`,
-	"$constant":        `IDENTIFIER "(" ")" abstraction`,
-	"$constants":       `"// Constants" constant+`,
-	"$constructor":     `IDENTIFIER "(" parameters? ")" abstraction`,
-	"$constructors":    `"// Constructors" constructor+`,
-	"$declaration":     `COMMENT "type" IDENTIFIER ("[" parameters "]")?`,
-	"$enumeration":     `"const" "(" values ")"`,
-	"$function":        `IDENTIFIER "(" parameters? ")" result`,
-	"$functional":      `declaration "func" "(" parameters? ")" result`,
-	"$functionals":     `"// Functionals" functional+`,
-	"$functions":       `"// Functions" function+`,
-	"$header":          `COMMENT "package" IDENTIFIER`,
-	"$imports":         `"import" "(" modules? ")"`,
-	"$instance":        `declaration "interface" "{" attributes? abstractions? methods? "}"`,
-	"$instances":       `"// Instances" instance+`,
-	"$interfaces":      `"// INTERFACES" aspects? classes? instances?`,
-	"$method":          `IDENTIFIER "(" parameters? ")" result?`,
-	"$methods":         `"// Methods" method+`,
-	"$model":           `notice header imports? types? interfaces?`,
-	"$module":          `IDENTIFIER TEXT`,
-	"$modules":         `module+`,
-	"$notice":          `COMMENT`,
-	"$parameter":       `IDENTIFIER abstraction`,
-	"$parameters":      `parameter ("," parameter)* ","?`,
-	"$prefix":          `"[" "]" | "map" "[" IDENTIFIER "]" | "chan" | IDENTIFIER "."`,
-	"$result":          `abstraction | "(" parameters ")"`,
-	"$source":          `model EOF  ! Terminated with an end-of-file marker.`,
-	"$specialization":  `declaration abstraction enumeration?`,
-	"$specializations": `"// Specializations" specialization+`,
-	"$types":           `"// TYPES" specializations? functionals?`,
-	"$values":          `parameter "=" "iota" IDENTIFIER*`,
+	"abstraction":     `prefix? Identifier ("[" arguments "]")?`,
+	"abstractions":    `"// Abstractions" abstraction+`,
+	"arguments":       `abstraction ("," abstraction)* ","?`,
+	"aspect":          `declaration "interface" "{" methods? "}"`,
+	"aspects":         `"// Aspects" aspect+`,
+	"attribute":       `Identifier "(" parameter? ")" abstraction?`,
+	"attributes":      `"// Attributes" attribute+`,
+	"class":           `declaration "interface" "{" constants? constructors? functions? "}"`,
+	"classes":         `"// Classes" class+`,
+	"constant":        `Identifier "(" ")" abstraction`,
+	"constants":       `"// Constants" constant+`,
+	"constructor":     `Identifier "(" parameters? ")" abstraction`,
+	"constructors":    `"// Constructors" constructor+`,
+	"declaration":     `Comment "type" Identifier ("[" parameters "]")?`,
+	"enumeration":     `"const" "(" values ")"`,
+	"function":        `Identifier "(" parameters? ")" result`,
+	"functional":      `declaration "func" "(" parameters? ")" result`,
+	"functionals":     `"// Functionals" functional+`,
+	"functions":       `"// Functions" function+`,
+	"header":          `Comment "package" Identifier`,
+	"imports":         `"import" "(" modules? ")"`,
+	"instance":        `declaration "interface" "{" attributes? abstractions? methods? "}"`,
+	"instances":       `"// Instances" instance+`,
+	"interfaces":      `"// INTERFACES" aspects? classes? instances?`,
+	"method":          `Identifier "(" parameters? ")" result?`,
+	"methods":         `"// Methods" method+`,
+	"module":          `Identifier Text`,
+	"modules":         `module+`,
+	"notice":          `Comment`,
+	"package":         `notice header imports? types? interfaces?`,
+	"parameter":       `Identifier abstraction`,
+	"parameters":      `parameter ("," parameter)* ","?`,
+	"prefix":          `"[" "]" | "map" "[" Identifier "]" | "chan" | Identifier "."`,
+	"result":          `abstraction | "(" parameters ")"`,
+	"source":          `package EOF  ! Terminated with an end-of-file marker.`,
+	"specialization":  `declaration abstraction enumeration?`,
+	"specializations": `"// Specializations" specialization+`,
+	"types":           `"// TYPES" specializations? functionals?`,
+	"values":          `parameter "=" "iota" Identifier*`,
 }
