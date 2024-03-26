@@ -11,8 +11,8 @@
 */
 
 /*
-Package packages provides the ability to generate Go class files based on a Go
-Package.go file that follows the format shown in the following code template:
+Package "packages" provides the ability to generate Go class files based on a
+Go Package.go file that follows the format shown in the following code template:
   - https://github.com/craterdog/go-package-framework/blob/main/packages/Package.go
 
 This package follows the Crater Dog Technologies™ Go Coding Conventions located
@@ -288,21 +288,6 @@ type GeneratorClassLike interface {
 }
 
 /*
-ModelClassLike defines the set of class constants, constructors and functions
-that must be supported by all package-class-like classes.
-*/
-type ModelClassLike interface {
-	// Constructors
-	MakeWithAttributes(
-		notice NoticeLike,
-		header HeaderLike,
-		imports ImportsLike,
-		types TypesLike,
-		interfaces InterfacesLike,
-	) ModelLike
-}
-
-/*
 HeaderClassLike defines the set of class constants, constructors and functions
 that must be supported by all header-class-like classes.
 */
@@ -376,6 +361,21 @@ that must be supported by all methods-class-like classes.
 type MethodsClassLike interface {
 	// Constructors
 	MakeWithAttributes(sequence col.Sequential[MethodLike]) MethodsLike
+}
+
+/*
+ModelClassLike defines the set of class constants, constructors and functions
+that must be supported by all package-class-like classes.
+*/
+type ModelClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		notice NoticeLike,
+		header HeaderLike,
+		imports ImportsLike,
+		types TypesLike,
+		interfaces InterfacesLike,
+	) ModelLike
 }
 
 /*
@@ -457,7 +457,7 @@ that must be supported by all scanner-class-like classes.
 */
 type ScannerClassLike interface {
 	// Constructors
-	MakeFromSource(source string, tokens col.QueueLike[TokenLike]) ScannerLike
+	Make(source string, tokens col.QueueLike[TokenLike]) ScannerLike
 
 	// Functions
 	MatchToken(type_ TokenType, text string) col.ListLike[string]
@@ -741,21 +741,12 @@ supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	CreateModel(directory string, name string, copyright string)
+	CreateModel(
+		directory string,
+		name string,
+		copyright string,
+	)
 	GeneratePackage(directory string)
-}
-
-/*
-ModelLike defines the set of abstractions and methods that must be supported by
-all package-like instances.
-*/
-type ModelLike interface {
-	// Attributes
-	GetNotice() NoticeLike
-	GetHeader() HeaderLike
-	GetImports() ImportsLike
-	GetInterfaces() InterfacesLike
-	GetTypes() TypesLike
 }
 
 /*
@@ -827,6 +818,19 @@ by all methods-like instances.
 type MethodsLike interface {
 	// Attributes
 	GetSequence() col.Sequential[MethodLike]
+}
+
+/*
+ModelLike defines the set of abstractions and methods that must be supported by
+all package-like instances.
+*/
+type ModelLike interface {
+	// Attributes
+	GetNotice() NoticeLike
+	GetHeader() HeaderLike
+	GetImports() ImportsLike
+	GetInterfaces() InterfacesLike
+	GetTypes() TypesLike
 }
 
 /*

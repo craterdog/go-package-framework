@@ -50,7 +50,7 @@ type scannerClass_ struct {
 
 // Constructors
 
-func (c *scannerClass_) MakeFromSource(
+func (c *scannerClass_) Make(
 	source string,
 	tokens col.QueueLike[TokenLike],
 ) ScannerLike {
@@ -112,7 +112,7 @@ func (v *scanner_) emitToken(type_ TokenType) {
 	}
 	var token = Token().MakeWithAttributes(v.line_, v.position_, type_, value)
 	//fmt.Println(token) // Uncomment when debugging.
-	v.tokens_.AddValue(token)
+	v.tokens_.AddValue(token) // This will block if the queue is full.
 }
 
 func (v *scanner_) foundEOF() {
@@ -130,7 +130,8 @@ func (v *scanner_) foundToken(type_ TokenType) bool {
 	if !matches.IsEmpty() {
 		var match = matches.GetValue(1)
 		var token = []rune(match)
-		v.next_ += len(token)
+		var length = len(token)
+		v.next_ += length
 		if type_ != SpaceToken {
 			v.emitToken(type_)
 		}
@@ -173,7 +174,6 @@ loop:
 		}
 	}
 	v.foundEOF()
-	v.tokens_.CloseQueue()
 }
 
 /*

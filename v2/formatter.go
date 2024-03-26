@@ -50,8 +50,8 @@ func (c *formatterClass_) Make() FormatterLike {
 // Target
 
 type formatter_ struct {
-	depth  int
-	result sts.Builder
+	depth_  int
+	result_ sts.Builder
 }
 
 // Public
@@ -100,14 +100,15 @@ func (v *formatter_) FormatResult(result ResultLike) string {
 
 func (v *formatter_) appendNewline() {
 	var separator = "\n"
-	for level := 0; level < v.depth; level++ {
-		separator += "\t"
+	var indentation = "\t"
+	for level := 0; level < v.depth_; level++ {
+		separator += indentation
 	}
 	v.appendString(separator)
 }
 
 func (v *formatter_) appendString(s string) {
-	v.result.WriteString(s)
+	v.result_.WriteString(s)
 }
 
 func (v *formatter_) fixComment(comment string) string {
@@ -146,7 +147,7 @@ func (v *formatter_) formatArguments(arguments ArgumentsLike) {
 	var sequence = arguments.GetSequence()
 	var size = sequence.GetSize()
 	if size > 2 {
-		v.depth++
+		v.depth_++
 		v.appendNewline()
 	}
 	var iterator = sequence.GetIterator()
@@ -164,7 +165,7 @@ func (v *formatter_) formatArguments(arguments ArgumentsLike) {
 	}
 	if size > 2 {
 		v.appendString(",")
-		v.depth--
+		v.depth_--
 		v.appendNewline()
 	}
 }
@@ -173,12 +174,12 @@ func (v *formatter_) formatAspect(aspect AspectLike) {
 	var declaration = aspect.GetDeclaration()
 	v.formatDeclaration(declaration)
 	v.appendString(" interface {")
-	v.depth++
+	v.depth_++
 	var methods = aspect.GetMethods()
 	if methods != nil {
 		v.formatMethods(methods)
 	}
-	v.depth--
+	v.depth_--
 	v.appendNewline()
 	v.appendString("}")
 }
@@ -226,7 +227,7 @@ func (v *formatter_) formatClass(class ClassLike) {
 	var declaration = class.GetDeclaration()
 	v.formatDeclaration(declaration)
 	v.appendString(" interface {")
-	v.depth++
+	v.depth_++
 	var hasContent bool
 	var constants = class.GetConstants()
 	if constants != nil {
@@ -248,7 +249,7 @@ func (v *formatter_) formatClass(class ClassLike) {
 		}
 		v.formatFunctions(functions)
 	}
-	v.depth--
+	v.depth_--
 	v.appendNewline()
 	v.appendString("}")
 }
@@ -327,11 +328,11 @@ func (v *formatter_) formatDeclaration(declaration DeclarationLike) {
 func (v *formatter_) formatEnumeration(enumeration EnumerationLike) {
 	v.appendNewline()
 	v.appendString("const (")
-	v.depth++
+	v.depth_++
 	v.appendNewline()
 	var values = enumeration.GetValues()
 	v.formatValues(values)
-	v.depth--
+	v.depth_--
 	v.appendNewline()
 	v.appendString(")")
 }
@@ -409,7 +410,7 @@ func (v *formatter_) formatInstance(instance InstanceLike) {
 	var declaration = instance.GetDeclaration()
 	v.formatDeclaration(declaration)
 	v.appendString(" interface {")
-	v.depth++
+	v.depth_++
 	var hasContent bool
 	var attributes = instance.GetAttributes()
 	if attributes != nil {
@@ -431,7 +432,7 @@ func (v *formatter_) formatInstance(instance InstanceLike) {
 		}
 		v.formatMethods(methods)
 	}
-	v.depth--
+	v.depth_--
 	v.appendNewline()
 	v.appendString("}")
 }
@@ -502,7 +503,7 @@ func (v *formatter_) formatModule(module ModuleLike) {
 }
 
 func (v *formatter_) formatModules(modules ModulesLike) {
-	v.depth++
+	v.depth_++
 	v.appendNewline()
 	var sequence = modules.GetSequence()
 	var iterator = sequence.GetIterator()
@@ -513,7 +514,7 @@ func (v *formatter_) formatModules(modules ModulesLike) {
 		v.appendNewline()
 		v.formatModule(module)
 	}
-	v.depth--
+	v.depth_--
 	v.appendNewline()
 }
 
@@ -560,7 +561,7 @@ func (v *formatter_) formatParameterNames(parameters ParametersLike) {
 	var sequence = parameters.GetSequence()
 	var size = sequence.GetSize()
 	if size > 2 {
-		v.depth++
+		v.depth_++
 		v.appendNewline()
 	}
 	var iterator = sequence.GetIterator()
@@ -578,7 +579,7 @@ func (v *formatter_) formatParameterNames(parameters ParametersLike) {
 	}
 	if size > 2 {
 		v.appendString(",")
-		v.depth--
+		v.depth_--
 		v.appendNewline()
 	}
 }
@@ -587,7 +588,7 @@ func (v *formatter_) formatParameters(parameters ParametersLike) {
 	var sequence = parameters.GetSequence()
 	var size = sequence.GetSize()
 	if size > 2 {
-		v.depth++
+		v.depth_++
 		v.appendNewline()
 	}
 	var iterator = sequence.GetIterator()
@@ -605,7 +606,7 @@ func (v *formatter_) formatParameters(parameters ParametersLike) {
 	}
 	if size > 2 {
 		v.appendString(",")
-		v.depth--
+		v.depth_--
 		v.appendNewline()
 	}
 }
@@ -694,7 +695,7 @@ func (v *formatter_) formatValues(values ValuesLike) {
 }
 
 func (v *formatter_) getResult() string {
-	var result = v.result.String()
-	v.result.Reset()
+	var result = v.result_.String()
+	v.result_.Reset()
 	return result
 }

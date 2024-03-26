@@ -46,7 +46,8 @@ type parserClass_ struct {
 
 func (c *parserClass_) Make() ParserLike {
 	return &parser_{
-		next_: col.Stack[TokenLike]().MakeWithCapacity(c.stackSize_),
+		tokens_: col.Queue[TokenLike]().MakeWithCapacity(c.queueSize_),
+		next_:   col.Stack[TokenLike]().MakeWithCapacity(c.stackSize_),
 	}
 }
 
@@ -57,24 +58,23 @@ func (c *parserClass_) Make() ParserLike {
 type parser_ struct {
 	source_ string                   // The original source code.
 	tokens_ col.QueueLike[TokenLike] // A queue of unread tokens from the scanner.
-	next_   col.StackLike[TokenLike] // A stack of unprocessed retrieved tokens.
+	next_   col.StackLike[TokenLike] // A stack of read, but unprocessed tokens.
 }
 
 // Public
 
 func (v *parser_) ParseSource(source string) ModelLike {
 	// The scanner runs in a separate Go routine.
-	v.source_ = sts.ReplaceAll(source, "\t", "    ") // F'ing tabs!
-	v.tokens_ = col.Queue[TokenLike]().MakeWithCapacity(parserClass.queueSize_)
-	Scanner().MakeFromSource(v.source_, v.tokens_)
+	v.source_ = source
+	Scanner().Make(v.source_, v.tokens_)
 
-	// Attempt to parse the model.
+	// Attempt to parse a model.
 	var model, token, ok = v.parseModel()
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("model",
-			"$source",
-			"$model",
+			"source",
+			"model",
 		)
 		panic(message)
 	}
@@ -84,8 +84,8 @@ func (v *parser_) ParseSource(source string) ModelLike {
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar("EOF",
-			"$source",
-			"$model",
+			"source",
+			"model",
 		)
 		panic(message)
 	}
@@ -106,8 +106,8 @@ func (v *parser_) formatError(token TokenLike) string {
 		"An unexpected token was received by the parser: %v\n",
 		token,
 	)
-	var lines = sts.Split(v.source_, "\n")
 	var line = token.GetLine()
+	var lines = sts.Split(v.source_, "\n")
 
 	// Append the source line with the error in it.
 	message += "\033[36m"
@@ -138,13 +138,13 @@ func (v *parser_) formatError(token TokenLike) string {
 This private instance method is useful when creating scanner and parser error
 messages that include the required grammatical rules.
 */
-func (v *parser_) generateGrammar(expected string, symbols ...string) string {
+func (v *parser_) generateGrammar(expected string, names ...string) string {
 	var message = "Was expecting '" + expected + "' from:\n"
-	for _, symbol := range symbols {
+	for _, name := range names {
 		message += fmt.Sprintf(
 			"  \033[32m%v: \033[33m%v\033[0m\n\n",
-			symbol,
-			grammar[symbol],
+			name,
+			grammar[name],
 		)
 	}
 	return message
@@ -155,18 +155,13 @@ This private instance method attempts to read the next token from the token
 stream and return it.
 */
 func (v *parser_) getNextToken() TokenLike {
-	var ok bool
-	var token TokenLike
-
-	// Check for any unprocessed tokens.
+	// Check for any read, but unprocessed tokens.
 	if !v.next_.IsEmpty() {
-		token = v.next_.RemoveTop()
-		//fmt.Println(token)
-		return token
+		return v.next_.RemoveTop()
 	}
 
 	// Read a new token from the token stream.
-	token, ok = v.tokens_.RemoveHead()
+	var token, ok = v.tokens_.RemoveHead() // This will wait for a token.
 	if !ok {
 		panic("The token channel terminated without an EOF token.")
 	}
@@ -176,7 +171,7 @@ func (v *parser_) getNextToken() TokenLike {
 		var message = v.formatError(token)
 		panic(message)
 	}
-	//fmt.Println(token)
+
 	return token
 }
 
