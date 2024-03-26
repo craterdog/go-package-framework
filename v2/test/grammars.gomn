@@ -138,8 +138,8 @@ that must be supported by all filter-class-like classes.
 */
 type FilterClassLike interface {
 	// Constructors
-	MakeWithGlyph(glyph GlyphLike, inverted bool) FilterLike
-	MakeWithIntrinsic(intrinsic string, inverted bool) FilterLike
+	MakeWithGlyph(glyph GlyphLike) FilterLike
+	MakeWithIntrinsic(intrinsic string) FilterLike
 }
 
 /*
@@ -197,6 +197,15 @@ type InlineClassLike interface {
 }
 
 /*
+InversionClassLike defines the set of class constants, constructors and functions
+that must be supported by all inversion-class-like classes.
+*/
+type InversionClassLike interface {
+	// Constructors
+	MakeWithAttributes(inverted bool, filter FilterLike) InversionLike
+}
+
+/*
 LineClassLike defines the set of class constants, constructors and functions
 that must be supported by all line-class-like classes.
 */
@@ -239,7 +248,7 @@ functions that must be supported by all predicate-class-like classes.
 type PredicateClassLike interface {
 	// Constructors
 	MakeWithElement(element ElementLike) PredicateLike
-	MakeWithFilter(filter FilterLike) PredicateLike
+	MakeWithInversion(inversion InversionLike) PredicateLike
 	MakeWithPrecedence(precedence PrecedenceLike) PredicateLike
 }
 
@@ -358,7 +367,6 @@ filter-like instances.
 */
 type FilterLike interface {
 	// Attributes
-	IsInverted() bool
 	GetIntrinsic() string
 	GetGlyph() GlyphLike
 }
@@ -423,6 +431,16 @@ type InlineLike interface {
 }
 
 /*
+InversionLike defines the set of aspects and methods that must be supported by all
+inversion-like instances.
+*/
+type InversionLike interface {
+	// Attributes
+	IsInverted() bool
+	GetFilter() FilterLike
+}
+
+/*
 LineLike defines the set of aspects and methods that must be supported by all
 line-like instances.
 */
@@ -466,7 +484,7 @@ all predicate-like instances.
 type PredicateLike interface {
 	// Attributes
 	GetElement() ElementLike
-	GetFilter() FilterLike
+	GetInversion() InversionLike
 	GetPrecedence() PrecedenceLike
 }
 
