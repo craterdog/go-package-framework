@@ -180,13 +180,10 @@ func (v *parser_) parseAbstraction() (
 	token TokenLike,
 	ok bool,
 ) {
-	var arguments ArgumentsLike
-	var delimiterToken, identifierToken TokenLike
-	var identifier string
-	var prefix PrefixLike
-
 	// Attempt to parse an optional prefix.
+	var prefix PrefixLike
 	prefix, _, ok = v.parsePrefix()
+	var identifier string
 	if ok {
 		// Attempt to parse an identifier.
 		identifier, token, ok = v.parseToken(IdentifierToken, "")
@@ -201,11 +198,13 @@ func (v *parser_) parseAbstraction() (
 		}
 	} else {
 		// Attempt to parse an identifier.
+		var identifierToken TokenLike
 		identifier, identifierToken, ok = v.parseToken(IdentifierToken, "")
 		if !ok {
 			// This is not an abstraction.
 			return abstraction, identifierToken, false
 		}
+		var delimiterToken TokenLike
 		_, delimiterToken, ok = v.parseToken(DelimiterToken, "(")
 		if ok {
 			// The identifier is the next method name not an abstraction.
@@ -218,6 +217,7 @@ func (v *parser_) parseAbstraction() (
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, "[")
+	var arguments ArgumentsLike
 	if ok {
 		// Attempt to parse a sequence of arguments.
 		arguments, token, ok = v.parseArguments()
@@ -254,8 +254,6 @@ func (v *parser_) parseAbstractions() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Abstractions")
 	if !ok {
@@ -264,6 +262,7 @@ func (v *parser_) parseAbstractions() (
 	}
 
 	// Attempt to parse at least one abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
@@ -289,9 +288,8 @@ func (v *parser_) parseArguments() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-
 	// Attempt to parse at least one abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		// This is not a sequence of arguments.
@@ -316,10 +314,8 @@ func (v *parser_) parseAspect() (
 	token TokenLike,
 	ok bool,
 ) {
-	var declaration DeclarationLike
-	var methods MethodsLike
-
 	// Attempt to parse a declaration.
+	var declaration DeclarationLike
 	declaration, token, ok = v.parseDeclaration()
 	if !ok {
 		// This is not an aspect.
@@ -351,7 +347,7 @@ func (v *parser_) parseAspect() (
 	}
 
 	// Attempt to parse an optional sequence of methods.
-	methods, _, _ = v.parseMethods()
+	var methods, _, _ = v.parseMethods()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, "}")
@@ -375,8 +371,6 @@ func (v *parser_) parseAspects() (
 	token TokenLike,
 	ok bool,
 ) {
-	var aspect AspectLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Aspects")
 	if !ok {
@@ -385,6 +379,7 @@ func (v *parser_) parseAspects() (
 	}
 
 	// Attempt to parse at least one aspect.
+	var aspect AspectLike
 	aspect, token, ok = v.parseAspect()
 	if !ok {
 		var message = v.formatError(token)
@@ -427,11 +422,8 @@ func (v *parser_) parseAttribute() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var identifier string
-	var parameter ParameterLike
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a attribute.
@@ -451,7 +443,7 @@ func (v *parser_) parseAttribute() (
 	}
 
 	// Attempt to parse an optional parameter.
-	parameter, _, _ = v.parseParameter()
+	var parameter, _, _ = v.parseParameter()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -466,7 +458,7 @@ func (v *parser_) parseAttribute() (
 	}
 
 	// Attempt to parse an optional abstraction.
-	abstraction, _, _ = v.parseAbstraction()
+	var abstraction, _, _ = v.parseAbstraction()
 
 	// Found a attribute.
 	attribute = Attribute().MakeWithAttributes(identifier, parameter, abstraction)
@@ -478,8 +470,6 @@ func (v *parser_) parseAttributes() (
 	token TokenLike,
 	ok bool,
 ) {
-	var attribute AttributeLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Attributes")
 	if !ok {
@@ -488,6 +478,7 @@ func (v *parser_) parseAttributes() (
 	}
 
 	// Attempt to parse at least one attribute.
+	var attribute AttributeLike
 	attribute, token, ok = v.parseAttribute()
 	if !ok {
 		var message = v.formatError(token)
@@ -513,12 +504,8 @@ func (v *parser_) parseClass() (
 	token TokenLike,
 	ok bool,
 ) {
-	var constants ConstantsLike
-	var constructors ConstructorsLike
-	var declaration DeclarationLike
-	var functions FunctionsLike
-
 	// Attempt to parse a declaration.
+	var declaration DeclarationLike
 	declaration, token, ok = v.parseDeclaration()
 	if !ok {
 		// This is not a class.
@@ -554,13 +541,13 @@ func (v *parser_) parseClass() (
 	}
 
 	// Attempt to parse an optional sequence of constants.
-	constants, _, _ = v.parseConstants()
+	var constants, _, _ = v.parseConstants()
 
 	// Attempt to parse an optional sequence of constructors.
-	constructors, _, _ = v.parseConstructors()
+	var constructors, _, _ = v.parseConstructors()
 
 	// Attempt to parse an optional sequence of functions.
-	functions, _, _ = v.parseFunctions()
+	var functions, _, _ = v.parseFunctions()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, "}")
@@ -586,8 +573,6 @@ func (v *parser_) parseClasses() (
 	token TokenLike,
 	ok bool,
 ) {
-	var class ClassLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Classes")
 	if !ok {
@@ -596,6 +581,7 @@ func (v *parser_) parseClasses() (
 	}
 
 	// Attempt to parse at least one class.
+	var class ClassLike
 	class, token, ok = v.parseClass()
 	if !ok {
 		var message = v.formatError(token)
@@ -640,10 +626,8 @@ func (v *parser_) parseConstant() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var identifier string
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a constant.
@@ -673,6 +657,7 @@ func (v *parser_) parseConstant() (
 	}
 
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
@@ -693,8 +678,6 @@ func (v *parser_) parseConstants() (
 	token TokenLike,
 	ok bool,
 ) {
-	var constant ConstantLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Constants")
 	if !ok {
@@ -703,6 +686,7 @@ func (v *parser_) parseConstants() (
 	}
 
 	// Attempt to parse at least one constant.
+	var constant ConstantLike
 	constant, token, ok = v.parseConstant()
 	if !ok {
 		var message = v.formatError(token)
@@ -728,11 +712,8 @@ func (v *parser_) parseConstructor() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var identifier string
-	var parameters ParametersLike
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a constructor.
@@ -752,7 +733,7 @@ func (v *parser_) parseConstructor() (
 	}
 
 	// Attempt to parse an optional sequence of parameters.
-	parameters, _, _ = v.parseParameters()
+	var parameters, _, _ = v.parseParameters()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -767,6 +748,7 @@ func (v *parser_) parseConstructor() (
 	}
 
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
@@ -788,8 +770,6 @@ func (v *parser_) parseConstructors() (
 	token TokenLike,
 	ok bool,
 ) {
-	var constructor ConstructorLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Constructors")
 	if !ok {
@@ -798,6 +778,7 @@ func (v *parser_) parseConstructors() (
 	}
 
 	// Attempt to parse at least one constructor.
+	var constructor ConstructorLike
 	constructor, token, ok = v.parseConstructor()
 	if !ok {
 		var message = v.formatError(token)
@@ -840,11 +821,8 @@ func (v *parser_) parseDeclaration() (
 	token TokenLike,
 	ok bool,
 ) {
-	var comment string
-	var identifier string
-	var parameters ParametersLike
-
 	// Attempt to parse a comment.
+	var comment string
 	comment, token, ok = v.parseToken(CommentToken, "")
 	if !ok {
 		// This is not a declaration.
@@ -863,6 +841,7 @@ func (v *parser_) parseDeclaration() (
 	}
 
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		var message = v.formatError(token)
@@ -875,6 +854,7 @@ func (v *parser_) parseDeclaration() (
 
 	// Attempt to parse an optional sequence of parameters.
 	_, token, ok = v.parseToken(DelimiterToken, "[")
+	var parameters ParametersLike
 	if ok {
 		parameters, token, ok = v.parseParameters()
 		if !ok {
@@ -906,8 +886,6 @@ func (v *parser_) parseEnumeration() (
 	token TokenLike,
 	ok bool,
 ) {
-	var values ValuesLike
-
 	// Attempt to parse a literal.
 	_, token, ok = v.parseToken(IdentifierToken, "const")
 	if !ok {
@@ -927,6 +905,7 @@ func (v *parser_) parseEnumeration() (
 	}
 
 	// Attempt to parse a sequence of values.
+	var values ValuesLike
 	values, token, ok = v.parseValues()
 	if !ok {
 		var message = v.formatError(token)
@@ -958,11 +937,8 @@ func (v *parser_) parseFunction() (
 	token TokenLike,
 	ok bool,
 ) {
-	var identifier string
-	var parameters ParametersLike
-	var result ResultLike
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a function.
@@ -982,7 +958,7 @@ func (v *parser_) parseFunction() (
 	}
 
 	// Attempt to parse an optional sequence of parameters.
-	parameters, _, _ = v.parseParameters()
+	var parameters, _, _ = v.parseParameters()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -997,6 +973,7 @@ func (v *parser_) parseFunction() (
 	}
 
 	// Attempt to parse a result.
+	var result ResultLike
 	result, token, ok = v.parseResult()
 	if !ok {
 		var message = v.formatError(token)
@@ -1018,8 +995,6 @@ func (v *parser_) parseFunctions() (
 	token TokenLike,
 	ok bool,
 ) {
-	var function FunctionLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Functions")
 	if !ok {
@@ -1028,6 +1003,7 @@ func (v *parser_) parseFunctions() (
 	}
 
 	// Attempt to parse at least one function.
+	var function FunctionLike
 	function, token, ok = v.parseFunction()
 	if !ok {
 		var message = v.formatError(token)
@@ -1070,11 +1046,8 @@ func (v *parser_) parseFunctional() (
 	token TokenLike,
 	ok bool,
 ) {
-	var declaration DeclarationLike
-	var parameters ParametersLike
-	var result ResultLike
-
 	// Attempt to parse a declaration.
+	var declaration DeclarationLike
 	declaration, token, ok = v.parseDeclaration()
 	if !ok {
 		// This is not a functional.
@@ -1108,7 +1081,7 @@ func (v *parser_) parseFunctional() (
 	}
 
 	// Attempt to parse an optional sequence of parameters.
-	parameters, _, _ = v.parseParameters()
+	var parameters, _, _ = v.parseParameters()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -1124,6 +1097,7 @@ func (v *parser_) parseFunctional() (
 	}
 
 	// Attempt to parse a result.
+	var result ResultLike
 	result, token, ok = v.parseResult()
 	if !ok {
 		var message = v.formatError(token)
@@ -1146,8 +1120,6 @@ func (v *parser_) parseFunctionals() (
 	token TokenLike,
 	ok bool,
 ) {
-	var functional FunctionalLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Functionals")
 	if !ok {
@@ -1156,6 +1128,7 @@ func (v *parser_) parseFunctionals() (
 	}
 
 	// Attempt to parse at least one functional.
+	var functional FunctionalLike
 	functional, token, ok = v.parseFunctional()
 	if !ok {
 		var message = v.formatError(token)
@@ -1198,10 +1171,8 @@ func (v *parser_) parseHeader() (
 	token TokenLike,
 	ok bool,
 ) {
-	var comment string
-	var identifier string
-
 	// Attempt to parse a comment.
+	var comment string
 	comment, token, ok = v.parseToken(CommentToken, "")
 	if !ok {
 		// This is not a header.
@@ -1219,6 +1190,7 @@ func (v *parser_) parseHeader() (
 	}
 
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		var message = v.formatError(token)
@@ -1238,8 +1210,6 @@ func (v *parser_) parseImports() (
 	token TokenLike,
 	ok bool,
 ) {
-	var modules ModulesLike
-
 	// Attempt to parse a literal.
 	_, token, ok = v.parseToken(IdentifierToken, "import")
 	if !ok {
@@ -1259,7 +1229,7 @@ func (v *parser_) parseImports() (
 	}
 
 	// Attempt to parse an optional sequence of modules.
-	modules, _, _ = v.parseModules()
+	var modules, _, _ = v.parseModules()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -1282,12 +1252,8 @@ func (v *parser_) parseInstance() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstractions AbstractionsLike
-	var attributes AttributesLike
-	var declaration DeclarationLike
-	var methods MethodsLike
-
 	// Attempt to parse a declaration.
+	var declaration DeclarationLike
 	declaration, token, ok = v.parseDeclaration()
 	if !ok {
 		// This is not an instance.
@@ -1323,13 +1289,13 @@ func (v *parser_) parseInstance() (
 	}
 
 	// Attempt to parse an optional sequence of attributes.
-	attributes, _, _ = v.parseAttributes()
+	var attributes, _, _ = v.parseAttributes()
 
 	// Attempt to parse an optional sequence of abstractions.
-	abstractions, _, _ = v.parseAbstractions()
+	var abstractions, _, _ = v.parseAbstractions()
 
 	// Attempt to parse an optional sequence of methods.
-	methods, _, _ = v.parseMethods()
+	var methods, _, _ = v.parseMethods()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, "}")
@@ -1355,8 +1321,6 @@ func (v *parser_) parseInstances() (
 	token TokenLike,
 	ok bool,
 ) {
-	var instance InstanceLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Instances")
 	if !ok {
@@ -1365,6 +1329,7 @@ func (v *parser_) parseInstances() (
 	}
 
 	// Attempt to parse at least one instance.
+	var instance InstanceLike
 	instance, token, ok = v.parseInstance()
 	if !ok {
 		var message = v.formatError(token)
@@ -1409,10 +1374,6 @@ func (v *parser_) parseInterfaces() (
 	token TokenLike,
 	ok bool,
 ) {
-	var aspects AspectsLike
-	var classes ClassesLike
-	var instances InstancesLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// INTERFACES")
 	if !ok {
@@ -1421,13 +1382,13 @@ func (v *parser_) parseInterfaces() (
 	}
 
 	// Attempt to parse an optional sequence of aspects.
-	aspects, _, _ = v.parseAspects()
+	var aspects, _, _ = v.parseAspects()
 
 	// Attempt to parse an optional sequence of classes.
-	classes, _, _ = v.parseClasses()
+	var classes, _, _ = v.parseClasses()
 
 	// Attempt to parse an optional sequence of instances.
-	instances, _, _ = v.parseInstances()
+	var instances, _, _ = v.parseInstances()
 
 	// Found a sequence of interfaces.
 	interfaces = Interfaces().MakeWithAttributes(aspects, classes, instances)
@@ -1439,11 +1400,8 @@ func (v *parser_) parseMethod() (
 	token TokenLike,
 	ok bool,
 ) {
-	var identifier string
-	var parameters ParametersLike
-	var result ResultLike
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a method.
@@ -1463,7 +1421,7 @@ func (v *parser_) parseMethod() (
 	}
 
 	// Attempt to parse an optional sequence of parameters.
-	parameters, _, _ = v.parseParameters()
+	var parameters, _, _ = v.parseParameters()
 
 	// Attempt to parse a delimiter.
 	_, token, ok = v.parseToken(DelimiterToken, ")")
@@ -1478,7 +1436,7 @@ func (v *parser_) parseMethod() (
 	}
 
 	// Attempt to parse an optional result.
-	result, _, _ = v.parseResult()
+	var result, _, _ = v.parseResult()
 
 	// Found a method.
 	method = Method().MakeWithAttributes(identifier, parameters, result)
@@ -1490,8 +1448,6 @@ func (v *parser_) parseMethods() (
 	token TokenLike,
 	ok bool,
 ) {
-	var method MethodLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Methods")
 	if !ok {
@@ -1500,6 +1456,7 @@ func (v *parser_) parseMethods() (
 	}
 
 	// Attempt to parse at least one method.
+	var method MethodLike
 	method, token, ok = v.parseMethod()
 	if !ok {
 		var message = v.formatError(token)
@@ -1542,10 +1499,8 @@ func (v *parser_) parseModule() (
 	token TokenLike,
 	ok bool,
 ) {
-	var identifier string
-	var repository string
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a module.
@@ -1553,6 +1508,7 @@ func (v *parser_) parseModule() (
 	}
 
 	// Attempt to parse a repository.
+	var repository string
 	repository, token, ok = v.parseToken(TextToken, "")
 	if !ok {
 		var message = v.formatError(token)
@@ -1572,9 +1528,8 @@ func (v *parser_) parseModules() (
 	token TokenLike,
 	ok bool,
 ) {
-	var module ModuleLike
-
 	// Attempt to parse at least one module.
+	var module ModuleLike
 	module, token, ok = v.parseModule()
 	if !ok {
 		// This is not a sequence of modules.
@@ -1613,9 +1568,8 @@ func (v *parser_) parseNotice() (
 	token TokenLike,
 	ok bool,
 ) {
-	var comment string
-
 	// Attempt to parse a comment.
+	var comment string
 	comment, token, ok = v.parseToken(CommentToken, "")
 	if !ok {
 		// This is not a notice.
@@ -1632,13 +1586,8 @@ func (v *parser_) parseModel() (
 	token TokenLike,
 	ok bool,
 ) {
-	var notice NoticeLike
-	var header HeaderLike
-	var types TypesLike
-	var interfaces InterfacesLike
-	var imports ImportsLike
-
 	// Attempt to parse a notice.
+	var notice NoticeLike
 	notice, token, ok = v.parseNotice()
 	if !ok {
 		// This is not model.
@@ -1646,6 +1595,7 @@ func (v *parser_) parseModel() (
 	}
 
 	// Attempt to parse a header.
+	var header HeaderLike
 	header, token, ok = v.parseHeader()
 	if !ok {
 		var message = v.formatError(token)
@@ -1661,13 +1611,13 @@ func (v *parser_) parseModel() (
 	}
 
 	// Attempt to parse an optional sequence of imports.
-	imports, _, _ = v.parseImports()
+	var imports, _, _ = v.parseImports()
 
 	// Attempt to parse an optional sequence of types.
-	types, _, _ = v.parseTypes()
+	var types, _, _ = v.parseTypes()
 
 	// Attempt to parse an optional sequence of interfaces.
-	interfaces, _, _ = v.parseInterfaces()
+	var interfaces, _, _ = v.parseInterfaces()
 
 	// Found a model.
 	model = Model().MakeWithAttributes(notice, header, imports, types, interfaces)
@@ -1679,10 +1629,8 @@ func (v *parser_) parseParameter() (
 	token TokenLike,
 	ok bool,
 ) {
-	var identifier string
-	var abstraction AbstractionLike
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a parameter.
@@ -1690,6 +1638,7 @@ func (v *parser_) parseParameter() (
 	}
 
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
@@ -1710,9 +1659,8 @@ func (v *parser_) parseParameters() (
 	token TokenLike,
 	ok bool,
 ) {
-	var parameter ParameterLike
-
 	// Attempt to parse at least one parameter.
+	var parameter ParameterLike
 	parameter, token, ok = v.parseParameter()
 	if !ok {
 		// This is not a sequence of parameters.
@@ -1737,11 +1685,11 @@ func (v *parser_) parsePrefix() (
 	token TokenLike,
 	ok bool,
 ) {
-	var delimiterToken, identifierToken TokenLike
 	var identifier string
 	var prefixType PrefixType
 
 	// Attempt to parse an array prefix.
+	var delimiterToken TokenLike
 	_, delimiterToken, ok = v.parseToken(DelimiterToken, "[")
 	if ok {
 		// Attempt to parse a delimiter.
@@ -1796,6 +1744,7 @@ func (v *parser_) parsePrefix() (
 	}
 
 	// Attempt to parse an alias prefix.
+	var identifierToken TokenLike
 	identifier, identifierToken, ok = v.parseToken(IdentifierToken, "")
 	if ok {
 		_, token, ok = v.parseToken(DelimiterToken, ".")
@@ -1817,10 +1766,8 @@ func (v *parser_) parseResult() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var parameters ParametersLike
-
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if ok {
 		// Found an abstraction result.
@@ -1830,6 +1777,7 @@ func (v *parser_) parseResult() (
 
 	// Attempt to parse a sequence of parameters.
 	_, token, ok = v.parseToken(DelimiterToken, "(")
+	var parameters ParametersLike
 	if ok {
 		parameters, token, ok = v.parseParameters()
 		if !ok {
@@ -1866,11 +1814,8 @@ func (v *parser_) parseSpecialization() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var declaration DeclarationLike
-	var enumeration EnumerationLike
-
 	// Attempt to parse a declaration.
+	var declaration DeclarationLike
 	declaration, token, ok = v.parseDeclaration()
 	if !ok {
 		// This is not a specialization.
@@ -1878,6 +1823,7 @@ func (v *parser_) parseSpecialization() (
 	}
 
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
@@ -1891,6 +1837,7 @@ func (v *parser_) parseSpecialization() (
 	}
 
 	// Attempt to parse an optional enumeration.
+	var enumeration EnumerationLike
 	enumeration, token, _ = v.parseEnumeration()
 
 	// Found a specialization.
@@ -1903,8 +1850,6 @@ func (v *parser_) parseSpecializations() (
 	token TokenLike,
 	ok bool,
 ) {
-	var specialization SpecializationLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// Specializations")
 	if !ok {
@@ -1913,6 +1858,7 @@ func (v *parser_) parseSpecializations() (
 	}
 
 	// Attempt to parse at least one specialization.
+	var specialization SpecializationLike
 	specialization, token, ok = v.parseSpecialization()
 	if !ok {
 		var message = v.formatError(token)
@@ -1976,9 +1922,6 @@ func (v *parser_) parseTypes() (
 	token TokenLike,
 	ok bool,
 ) {
-	var functionals FunctionalsLike
-	var specializations SpecializationsLike
-
 	// Attempt to parse a note.
 	_, token, ok = v.parseToken(NoteToken, "// TYPES")
 	if !ok {
@@ -1987,10 +1930,10 @@ func (v *parser_) parseTypes() (
 	}
 
 	// Attempt to parse an optional sequence of specializations.
-	specializations, _, _ = v.parseSpecializations()
+	var specializations, _, _ = v.parseSpecializations()
 
 	// Attempt to parse an optional sequence of functionals.
-	functionals, _, _ = v.parseFunctionals()
+	var functionals, _, _ = v.parseFunctionals()
 
 	// Found a sequence of types.
 	types = Types().MakeWithAttributes(specializations, functionals)
@@ -2002,10 +1945,8 @@ func (v *parser_) parseValues() (
 	token TokenLike,
 	ok bool,
 ) {
-	var abstraction AbstractionLike
-	var identifier string
-
 	// Attempt to parse an identifier.
+	var identifier string
 	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	if !ok {
 		// This is not a sequence of values.
@@ -2013,6 +1954,7 @@ func (v *parser_) parseValues() (
 	}
 
 	// Attempt to parse an abstraction.
+	var abstraction AbstractionLike
 	abstraction, token, ok = v.parseAbstraction()
 	if !ok {
 		var message = v.formatError(token)
