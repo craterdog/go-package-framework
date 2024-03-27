@@ -54,18 +54,18 @@ func (c *prefixClass_) MakeWithAttributes(identifier string, type_ PrefixType) P
 // Target
 
 type prefix_ struct {
-	identifier_ string
 	type_       PrefixType
+	identifier_ string
 }
 
 // Attributes
 
-func (v *prefix_) GetIdentifier() string {
-	return v.identifier_
-}
-
 func (v *prefix_) GetType() PrefixType {
 	return v.type_
+}
+
+func (v *prefix_) GetIdentifier() string {
+	return v.identifier_
 }
 
 // Public

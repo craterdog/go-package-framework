@@ -42,10 +42,10 @@ type valuesClass_ struct {
 
 // Constructors
 
-func (c *valuesClass_) MakeWithAttributes(sequence col.Sequential[string], abstraction AbstractionLike) ValuesLike {
+func (c *valuesClass_) MakeWithAttributes(parameter ParameterLike, sequence col.Sequential[string]) ValuesLike {
 	return &values_{
-		sequence_:    sequence,
-		abstraction_: abstraction,
+		parameter_: parameter,
+		sequence_:  sequence,
 	}
 }
 
@@ -56,14 +56,14 @@ func (c *valuesClass_) MakeWithAttributes(sequence col.Sequential[string], abstr
 // Target
 
 type values_ struct {
-	abstraction_ AbstractionLike
-	sequence_    col.Sequential[string]
+	parameter_ ParameterLike
+	sequence_  col.Sequential[string]
 }
 
 // Attributes
 
-func (v *values_) GetAbstraction() AbstractionLike {
-	return v.abstraction_
+func (v *values_) GetParameter() ParameterLike {
+	return v.parameter_
 }
 
 func (v *values_) GetSequence() col.Sequential[string] {

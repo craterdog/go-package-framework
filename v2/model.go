@@ -66,8 +66,8 @@ type model_ struct {
 	notice_     NoticeLike
 	header_     HeaderLike
 	imports_    ImportsLike
-	interfaces_ InterfacesLike
 	types_      TypesLike
+	interfaces_ InterfacesLike
 }
 
 // Attributes
@@ -84,12 +84,12 @@ func (v *model_) GetImports() ImportsLike {
 	return v.imports_
 }
 
-func (v *model_) GetInterfaces() InterfacesLike {
-	return v.interfaces_
-}
-
 func (v *model_) GetTypes() TypesLike {
 	return v.types_
+}
+
+func (v *model_) GetInterfaces() InterfacesLike {
+	return v.interfaces_
 }
 
 // Public

@@ -54,18 +54,18 @@ func (c *parameterClass_) MakeWithAttributes(identifier string, abstraction Abst
 // Target
 
 type parameter_ struct {
-	abstraction_ AbstractionLike
 	identifier_  string
+	abstraction_ AbstractionLike
 }
 
 // Attributes
 
-func (v *parameter_) GetAbstraction() AbstractionLike {
-	return v.abstraction_
-}
-
 func (v *parameter_) GetIdentifier() string {
 	return v.identifier_
+}
+
+func (v *parameter_) GetAbstraction() AbstractionLike {
+	return v.abstraction_
 }
 
 // Public

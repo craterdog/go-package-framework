@@ -59,23 +59,23 @@ func (c *abstractionClass_) MakeWithAttributes(
 // Target
 
 type abstraction_ struct {
-	arguments_  ArgumentsLike
-	identifier_ string
 	prefix_     PrefixLike
+	identifier_ string
+	arguments_  ArgumentsLike
 }
 
 // Attributes
 
-func (v *abstraction_) GetArguments() ArgumentsLike {
-	return v.arguments_
+func (v *abstraction_) GetPrefix() PrefixLike {
+	return v.prefix_
 }
 
 func (v *abstraction_) GetIdentifier() string {
 	return v.identifier_
 }
 
-func (v *abstraction_) GetPrefix() PrefixLike {
-	return v.prefix_
+func (v *abstraction_) GetArguments() ArgumentsLike {
+	return v.arguments_
 }
 
 // Public

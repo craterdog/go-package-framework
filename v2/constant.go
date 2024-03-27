@@ -54,18 +54,18 @@ func (c *constantClass_) MakeWithAttributes(identifier string, abstraction Abstr
 // Target
 
 type constant_ struct {
-	abstraction_ AbstractionLike
 	identifier_  string
+	abstraction_ AbstractionLike
 }
 
 // Attributes
 
-func (v *constant_) GetAbstraction() AbstractionLike {
-	return v.abstraction_
-}
-
 func (v *constant_) GetIdentifier() string {
 	return v.identifier_
+}
+
+func (v *constant_) GetAbstraction() AbstractionLike {
+	return v.abstraction_
 }
 
 // Public

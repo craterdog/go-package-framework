@@ -61,13 +61,17 @@ func (c *classClass_) MakeWithAttributes(
 // Target
 
 type class_ struct {
+	declaration_  DeclarationLike
 	constants_    ConstantsLike
 	constructors_ ConstructorsLike
-	declaration_  DeclarationLike
 	functions_    FunctionsLike
 }
 
 // Attributes
+
+func (v *class_) GetDeclaration() DeclarationLike {
+	return v.declaration_
+}
 
 func (v *class_) GetConstants() ConstantsLike {
 	return v.constants_
@@ -75,10 +79,6 @@ func (v *class_) GetConstants() ConstantsLike {
 
 func (v *class_) GetConstructors() ConstructorsLike {
 	return v.constructors_
-}
-
-func (v *class_) GetDeclaration() DeclarationLike {
-	return v.declaration_
 }
 
 func (v *class_) GetFunctions() FunctionsLike {

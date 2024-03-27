@@ -384,7 +384,7 @@ functions that must be supported by all module-class-like classes.
 */
 type ModuleClassLike interface {
 	// Constructors
-	MakeWithAttributes(identifier string, repository string) ModuleLike
+	MakeWithAttributes(identifier string, text string) ModuleLike
 }
 
 /*
@@ -526,7 +526,7 @@ that must be supported by all values-class-like classes.
 */
 type ValuesClassLike interface {
 	// Constructors
-	MakeWithAttributes(sequence col.Sequential[string], abstraction AbstractionLike) ValuesLike
+	MakeWithAttributes(parameter ParameterLike, sequence col.Sequential[string]) ValuesLike
 }
 
 // Instances
@@ -537,9 +537,9 @@ supported by all abstraction-like instances.
 */
 type AbstractionLike interface {
 	// Attributes
-	GetArguments() ArgumentsLike
-	GetIdentifier() string
 	GetPrefix() PrefixLike
+	GetIdentifier() string
+	GetArguments() ArgumentsLike
 }
 
 /*
@@ -585,9 +585,9 @@ by all attribute-like instances.
 */
 type AttributeLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
 	GetIdentifier() string
 	GetParameter() ParameterLike
+	GetAbstraction() AbstractionLike
 }
 
 /*
@@ -605,9 +605,9 @@ all class-like instances.
 */
 type ClassLike interface {
 	// Attributes
+	GetDeclaration() DeclarationLike
 	GetConstants() ConstantsLike
 	GetConstructors() ConstructorsLike
-	GetDeclaration() DeclarationLike
 	GetFunctions() FunctionsLike
 }
 
@@ -626,8 +626,8 @@ by all constant-like instances.
 */
 type ConstantLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
 	GetIdentifier() string
+	GetAbstraction() AbstractionLike
 }
 
 /*
@@ -645,9 +645,9 @@ supported by all constructor-like instances.
 */
 type ConstructorLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
 	GetIdentifier() string
 	GetParameters() ParametersLike
+	GetAbstraction() AbstractionLike
 }
 
 /*
@@ -774,9 +774,9 @@ by all instance-like instances.
 */
 type InstanceLike interface {
 	// Attributes
-	GetAbstractions() AbstractionsLike
-	GetAttributes() AttributesLike
 	GetDeclaration() DeclarationLike
+	GetAttributes() AttributesLike
+	GetAbstractions() AbstractionsLike
 	GetMethods() MethodsLike
 }
 
@@ -829,8 +829,8 @@ type ModelLike interface {
 	GetNotice() NoticeLike
 	GetHeader() HeaderLike
 	GetImports() ImportsLike
-	GetInterfaces() InterfacesLike
 	GetTypes() TypesLike
+	GetInterfaces() InterfacesLike
 }
 
 /*
@@ -840,7 +840,7 @@ supported by all module-like instances.
 type ModuleLike interface {
 	// Attributes
 	GetIdentifier() string
-	GetRepository() string
+	GetText() string
 }
 
 /*
@@ -867,8 +867,8 @@ by all parameter-like instances.
 */
 type ParameterLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
 	GetIdentifier() string
+	GetAbstraction() AbstractionLike
 }
 
 /*
@@ -895,8 +895,8 @@ supported by all prefix-like instances.
 */
 type PrefixLike interface {
 	// Attributes
-	GetIdentifier() string
 	GetType() PrefixType
+	GetIdentifier() string
 }
 
 /*
@@ -922,8 +922,8 @@ supported by all specialization-like instances.
 */
 type SpecializationLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
 	GetDeclaration() DeclarationLike
+	GetAbstraction() AbstractionLike
 	GetEnumeration() EnumerationLike
 }
 
@@ -954,8 +954,8 @@ all types-like instances.
 */
 type TypesLike interface {
 	// Attributes
-	GetFunctionals() FunctionalsLike
 	GetSpecializations() SpecializationsLike
+	GetFunctionals() FunctionalsLike
 }
 
 /*
@@ -973,6 +973,6 @@ all values-like instances.
 */
 type ValuesLike interface {
 	// Attributes
-	GetAbstraction() AbstractionLike
+	GetParameter() ParameterLike
 	GetSequence() col.Sequential[string]
 }

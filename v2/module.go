@@ -40,10 +40,10 @@ type moduleClass_ struct {
 
 // Constructors
 
-func (c *moduleClass_) MakeWithAttributes(identifier string, repository string) ModuleLike {
+func (c *moduleClass_) MakeWithAttributes(identifier string, text string) ModuleLike {
 	return &module_{
 		identifier_: identifier,
-		repository_: repository,
+		text_:       text,
 	}
 }
 
@@ -55,7 +55,7 @@ func (c *moduleClass_) MakeWithAttributes(identifier string, repository string) 
 
 type module_ struct {
 	identifier_ string
-	repository_ string
+	text_       string
 }
 
 // Attributes
@@ -64,8 +64,8 @@ func (v *module_) GetIdentifier() string {
 	return v.identifier_
 }
 
-func (v *module_) GetRepository() string {
-	return v.repository_
+func (v *module_) GetText() string {
+	return v.text_
 }
 
 // Public

@@ -498,8 +498,8 @@ func (v *formatter_) formatModule(module ModuleLike) {
 	var identifier = module.GetIdentifier()
 	v.appendString(identifier)
 	v.appendString(" ")
-	var repository = module.GetRepository()
-	v.appendString(repository)
+	var text = module.GetText()
+	v.appendString(text)
 }
 
 func (v *formatter_) formatModules(modules ModulesLike) {
@@ -680,15 +680,12 @@ func (v *formatter_) formatTypes(types TypesLike) {
 }
 
 func (v *formatter_) formatValues(values ValuesLike) {
-	var iterator = values.GetSequence().GetIterator()
-	var identifier = iterator.GetNext()
-	v.appendString(identifier)
-	v.appendString(" ")
-	var abstraction = values.GetAbstraction()
-	v.formatAbstraction(abstraction)
+	var parameter = values.GetParameter()
+	v.formatParameter(parameter)
 	v.appendString(" = iota")
+	var iterator = values.GetSequence().GetIterator()
 	for iterator.HasNext() {
-		identifier = iterator.GetNext()
+		var identifier = iterator.GetNext()
 		v.appendNewline()
 		v.appendString(identifier)
 	}

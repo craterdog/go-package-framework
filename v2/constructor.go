@@ -59,16 +59,12 @@ func (c *constructorClass_) MakeWithAttributes(
 // Target
 
 type constructor_ struct {
-	abstraction_ AbstractionLike
 	identifier_  string
 	parameters_  ParametersLike
+	abstraction_ AbstractionLike
 }
 
 // Attributes
-
-func (v *constructor_) GetAbstraction() AbstractionLike {
-	return v.abstraction_
-}
 
 func (v *constructor_) GetIdentifier() string {
 	return v.identifier_
@@ -76,6 +72,10 @@ func (v *constructor_) GetIdentifier() string {
 
 func (v *constructor_) GetParameters() ParametersLike {
 	return v.parameters_
+}
+
+func (v *constructor_) GetAbstraction() AbstractionLike {
+	return v.abstraction_
 }
 
 // Public

@@ -54,18 +54,18 @@ func (c *typesClass_) MakeWithAttributes(specializations SpecializationsLike, fu
 // Target
 
 type types_ struct {
-	functionals_     FunctionalsLike
 	specializations_ SpecializationsLike
+	functionals_     FunctionalsLike
 }
 
 // Attributes
 
-func (v *types_) GetFunctionals() FunctionalsLike {
-	return v.functionals_
-}
-
 func (v *types_) GetSpecializations() SpecializationsLike {
 	return v.specializations_
+}
+
+func (v *types_) GetFunctionals() FunctionalsLike {
+	return v.functionals_
 }
 
 // Public

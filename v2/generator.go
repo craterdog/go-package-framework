@@ -604,9 +604,9 @@ func (v *generator_) generateImports(model ModelLike, class string) string {
 			for iterator.HasNext() {
 				var packageModule = iterator.GetNext()
 				var identifier = packageModule.GetIdentifier()
-				var repository = packageModule.GetRepository()
+				var text = packageModule.GetText()
 				if sts.Contains(class, identifier+".") {
-					modules += "\n\t" + identifier + " " + repository
+					modules += "\n\t" + identifier + " " + text
 				}
 			}
 		}

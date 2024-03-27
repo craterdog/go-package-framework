@@ -61,24 +61,24 @@ func (c *instanceClass_) MakeWithAttributes(
 // Target
 
 type instance_ struct {
-	abstractions_ AbstractionsLike
-	attributes_   AttributesLike
 	declaration_  DeclarationLike
+	attributes_   AttributesLike
+	abstractions_ AbstractionsLike
 	methods_      MethodsLike
 }
 
 // Attributes
 
-func (v *instance_) GetAbstractions() AbstractionsLike {
-	return v.abstractions_
+func (v *instance_) GetDeclaration() DeclarationLike {
+	return v.declaration_
 }
 
 func (v *instance_) GetAttributes() AttributesLike {
 	return v.attributes_
 }
 
-func (v *instance_) GetDeclaration() DeclarationLike {
-	return v.declaration_
+func (v *instance_) GetAbstractions() AbstractionsLike {
+	return v.abstractions_
 }
 
 func (v *instance_) GetMethods() MethodsLike {

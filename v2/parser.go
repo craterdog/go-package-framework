@@ -1507,9 +1507,9 @@ func (v *parser_) parseModule() (
 		return module, token, false
 	}
 
-	// Attempt to parse a repository.
-	var repository string
-	repository, token, ok = v.parseToken(TextToken, "")
+	// Attempt to parse text.
+	var text string
+	text, token, ok = v.parseToken(TextToken, "")
 	if !ok {
 		var message = v.formatError(token)
 		message += v.generateGrammar(`"Text"`,
@@ -1519,7 +1519,7 @@ func (v *parser_) parseModule() (
 	}
 
 	// Found a module.
-	module = Module().MakeWithAttributes(identifier, repository)
+	module = Module().MakeWithAttributes(identifier, text)
 	return module, token, true
 }
 
@@ -1544,9 +1544,9 @@ func (v *parser_) parseModules() (
 		func(first, second col.Value) int {
 			// The modules must be sorted using their repository names.
 			var firstModule = first.(ModuleLike)
-			var firstString = firstModule.GetRepository()
+			var firstString = firstModule.GetText()
 			var secondModule = second.(ModuleLike)
-			var secondString = secondModule.GetRepository()
+			var secondString = secondModule.GetText()
 			switch {
 			case firstString < secondString:
 				return -1
@@ -1945,24 +1945,12 @@ func (v *parser_) parseValues() (
 	token TokenLike,
 	ok bool,
 ) {
-	// Attempt to parse an identifier.
-	var identifier string
-	identifier, token, ok = v.parseToken(IdentifierToken, "")
+	// Attempt to parse a parameter.
+	var parameter ParameterLike
+	parameter, token, ok = v.parseParameter()
 	if !ok {
 		// This is not a sequence of values.
 		return values, token, false
-	}
-
-	// Attempt to parse an abstraction.
-	var abstraction AbstractionLike
-	abstraction, token, ok = v.parseAbstraction()
-	if !ok {
-		var message = v.formatError(token)
-		message += v.generateGrammar("values",
-			"values",
-			"parameter",
-		)
-		panic(message)
 	}
 
 	// Attempt to parse a delimiter.
@@ -1988,14 +1976,16 @@ func (v *parser_) parseValues() (
 	}
 
 	// Attempt to parse a sequence of identifiers.
+	var identifier string
 	var sequence = col.List[string]().Make()
+	identifier, token, ok = v.parseToken(IdentifierToken, "")
 	for ok {
 		sequence.AppendValue(identifier)
 		identifier, token, ok = v.parseToken(IdentifierToken, "")
 	}
 
 	// Found a sequence of values.
-	values = Values().MakeWithAttributes(sequence, abstraction)
+	values = Values().MakeWithAttributes(parameter, sequence)
 	return values, token, true
 }
 

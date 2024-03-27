@@ -59,19 +59,19 @@ func (c *specializationClass_) MakeWithAttributes(
 // Target
 
 type specialization_ struct {
-	abstraction_ AbstractionLike
 	declaration_ DeclarationLike
+	abstraction_ AbstractionLike
 	enumeration_ EnumerationLike
 }
 
 // Attributes
 
-func (v *specialization_) GetAbstraction() AbstractionLike {
-	return v.abstraction_
-}
-
 func (v *specialization_) GetDeclaration() DeclarationLike {
 	return v.declaration_
+}
+
+func (v *specialization_) GetAbstraction() AbstractionLike {
+	return v.abstraction_
 }
 
 func (v *specialization_) GetEnumeration() EnumerationLike {

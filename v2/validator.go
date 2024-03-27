@@ -586,6 +586,6 @@ func (v *validator_) validateSpecializations() {
 }
 
 func (v *validator_) validateValues(values ValuesLike) {
-	var abstraction = values.GetAbstraction()
-	v.validateAbstraction(abstraction)
+	var parameter = values.GetParameter()
+	v.validateParameter(parameter)
 }

@@ -11,24 +11,20 @@
 */
 
 /*
-Package "grammars" provides a parser and formatter for language grammars defined
-using Crater Dog Syntax Notation™ (CDSN).  The parser performs validation on the
-resulting parse tree.  The formatter takes a validated parse tree and generates
-the corresponding CDSN source using the canonical format.
+Package "packages" provides the ability to generate Go class files based on a
+Go Package.go file that follows the format shown in the following code template:
+  - https://github.com/craterdog/go-package-framework/blob/main/packages/Package.go
 
-For detailed documentation on this package refer to the wiki:
-  - https://github.com/craterdog/go-grammar-framework/wiki
-
-This package follows the Crater Dog Technologies™ (craterdog) Go Coding
-Conventions located here:
+This package follows the Crater Dog Technologies™ Go Coding Conventions located
+here:
   - https://github.com/craterdog/go-package-framework/wiki
 
-Additional implementations of the classes provided by this package can be
-developed and used seamlessly since the interface definitions only depend on
-other interfaces and primitive types; and the class implementations only depend
+Additional implementations of the concrete classes provided by this package can
+be developed and used seamlessly since the interface definitions only depend on
+other interfaces and primitive types—and the class implementations only depend
 on interfaces, not on each other.
 */
-package grammars
+package packages
 
 import (
 	col "github.com/craterdog/go-collection-framework/v3"
@@ -39,6 +35,19 @@ import (
 // Specializations
 
 /*
+PrefixType is a specialized type representing a prefix type.
+*/
+type PrefixType uint8
+
+const (
+	ErrorPrefix PrefixType = iota
+	AliasPrefix
+	ArrayPrefix
+	ChannelPrefix
+	MapPrefix
+)
+
+/*
 TokenType is a specialized type representing any token type recognized by a
 scanner.
 */
@@ -46,17 +55,14 @@ type TokenType uint8
 
 const (
 	ErrorToken TokenType = iota
-	CharacterToken
 	CommentToken
 	DelimiterToken
 	EOFToken
 	EOLToken
-	IntrinsicToken
-	LiteralToken
-	NameToken
+	IdentifierToken
 	NoteToken
-	NumberToken
 	SpaceToken
+	TextToken
 )
 
 // INTERFACES
@@ -64,82 +70,159 @@ const (
 // Classes
 
 /*
-AlternativeClassLike defines the set of class constants, constructors and
-functions that must be supported by all alternative-class-like classes.
+AbstractionClassLike defines the set of class constants, constructors and
+functions that must be supported by all abstraction-class-like classes.
 */
-type AlternativeClassLike interface {
+type AbstractionClassLike interface {
 	// Constructors
-	MakeWithAttributes(factors col.Sequential[FactorLike]) AlternativeLike
+	MakeWithAttributes(
+		prefix PrefixLike,
+		identifier string,
+		arguments ArgumentsLike,
+	) AbstractionLike
 }
 
 /*
-CardinalityClassLike defines the set of class constants, constructors and
-functions that must be supported by all cardinality-class-like classes.
+AbstractionsClassLike defines the set of class constants, constructors and
+functions that must be supported by all abstractions-class-like classes.
 */
-type CardinalityClassLike interface {
+type AbstractionsClassLike interface {
 	// Constructors
-	MakeWithAttributes(constraint ConstraintLike) CardinalityLike
+	MakeWithAttributes(sequence col.Sequential[AbstractionLike]) AbstractionsLike
 }
 
 /*
-ConstraintClassLike defines the set of class constants, constructors and
-functions that must be supported by all constraint-class-like classes.
+ArgumentsClassLike defines the set of class constants, constructors and
+functions that must be supported by all arguments-class-like classes.
 */
-type ConstraintClassLike interface {
+type ArgumentsClassLike interface {
 	// Constructors
-	MakeWithAttributes(first string, last string) ConstraintLike
+	MakeWithAttributes(sequence col.Sequential[AbstractionLike]) ArgumentsLike
 }
 
 /*
-DefinitionClassLike defines the set of class constants, constructors and
-functions that must be supported by all definition-class-like classes.
+AspectClassLike defines the set of class constants, constructors and
+functions that must be supported by all aspect-class-like classes.
 */
-type DefinitionClassLike interface {
+type AspectClassLike interface {
+	// Constructors
+	MakeWithAttributes(declaration DeclarationLike, methods MethodsLike) AspectLike
+}
+
+/*
+AspectsClassLike defines the set of class constants, constructors and
+functions that must be supported by all aspects-class-like classes.
+*/
+type AspectsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[AspectLike]) AspectsLike
+}
+
+/*
+AttributeClassLike defines the set of class constants, constructors and
+functions that must be supported by all attribute-class-like classes.
+*/
+type AttributeClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		identifier string,
+		parameter ParameterLike,
+		abstraction AbstractionLike,
+	) AttributeLike
+}
+
+/*
+AttributesClassLike defines the set of class constants, constructors and
+functions that must be supported by all constants-class-like classes.
+*/
+type AttributesClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[AttributeLike]) AttributesLike
+}
+
+/*
+ClassClassLike defines the set of class constants, constructors and
+functions that must be supported by all class-class-like classes.
+*/
+type ClassClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		declaration DeclarationLike,
+		constants ConstantsLike,
+		constructors ConstructorsLike,
+		functions FunctionsLike,
+	) ClassLike
+}
+
+/*
+ClassesClassLike defines the set of class constants, constructors and
+functions that must be supported by all classes-class-like classes.
+*/
+type ClassesClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[ClassLike]) ClassesLike
+}
+
+/*
+ConstantClassLike defines the set of class constants, constructors and
+functions that must be supported by all constant-class-like classes.
+*/
+type ConstantClassLike interface {
+	// Constructors
+	MakeWithAttributes(identifier string, abstraction AbstractionLike) ConstantLike
+}
+
+/*
+ConstantsClassLike defines the set of class constants, constructors and
+functions that must be supported by all constants-class-like classes.
+*/
+type ConstantsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[ConstantLike]) ConstantsLike
+}
+
+/*
+ConstructorClassLike defines the set of class constants, constructors and
+functions that must be supported by all constructor-class-like classes.
+*/
+type ConstructorClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		identifier string,
+		parameters ParametersLike,
+		abstraction AbstractionLike,
+	) ConstructorLike
+}
+
+/*
+ConstructorsClassLike defines the set of class constants, constructors and
+functions that must be supported by all constructors-class-like classes.
+*/
+type ConstructorsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[ConstructorLike]) ConstructorsLike
+}
+
+/*
+DeclarationClassLike defines the set of class constants, constructors and
+functions that must be supported by all declaration-class-like classes.
+*/
+type DeclarationClassLike interface {
 	// Constructors
 	MakeWithAttributes(
 		comment string,
-		name string,
-		expression ExpressionLike,
-	) DefinitionLike
+		identifier string,
+		parameters ParametersLike,
+	) DeclarationLike
 }
 
 /*
-ElementClassLike defines the set of class constants, constructors and functions
-that must be supported by all element-class-like classes.
+EnumerationClassLike defines the set of class constants, constructors and
+functions that must be supported by all enumeration-class-like classes.
 */
-type ElementClassLike interface {
+type EnumerationClassLike interface {
 	// Constructors
-	MakeWithLiteral(literal string) ElementLike
-	MakeWithName(name string) ElementLike
-}
-
-/*
-ExpressionClassLike defines the set of class constants, constructors and
-functions that must be supported by all expression-class-like classes.
-*/
-type ExpressionClassLike interface {
-	// Constructors
-	MakeWithInline(inline InlineLike) ExpressionLike
-	MakeWithMultiline(multiline MultilineLike) ExpressionLike
-}
-
-/*
-FactorClassLike defines the set of class constants, constructors and functions
-that must be supported by all factor-class-like classes.
-*/
-type FactorClassLike interface {
-	// Constructors
-	MakeWithAttributes(predicate PredicateLike, cardinality CardinalityLike) FactorLike
-}
-
-/*
-FilterClassLike defines the set of class constants, constructors and functions
-that must be supported by all filter-class-like classes.
-*/
-type FilterClassLike interface {
-	// Constructors
-	MakeWithGlyph(glyph GlyphLike) FilterLike
-	MakeWithIntrinsic(intrinsic string) FilterLike
+	MakeWithAttributes(values ValuesLike) EnumerationLike
 }
 
 /*
@@ -152,6 +235,50 @@ type FormatterClassLike interface {
 }
 
 /*
+FunctionClassLike defines the set of class constants, constructors and
+functions that must be supported by all function-class-like classes.
+*/
+type FunctionClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		identifier string,
+		parameters ParametersLike,
+		result ResultLike,
+	) FunctionLike
+}
+
+/*
+FunctionalClassLike defines the set of class constants, constructors and
+functions that must be supported by all functional-class-like classes.
+*/
+type FunctionalClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		declaration DeclarationLike,
+		parameters ParametersLike,
+		result ResultLike,
+	) FunctionalLike
+}
+
+/*
+FunctionalsClassLike defines the set of class constants, constructors and
+functions that must be supported by all functionals-class-like classes.
+*/
+type FunctionalsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[FunctionalLike]) FunctionalsLike
+}
+
+/*
+FunctionsClassLike defines the set of class constants, constructors and
+functions that must be supported by all functions-class-like classes.
+*/
+type FunctionsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[FunctionLike]) FunctionsLike
+}
+
+/*
 GeneratorClassLike defines the set of class constants, constructors and
 functions that must be supported by all generator-class-like classes.
 */
@@ -161,66 +288,139 @@ type GeneratorClassLike interface {
 }
 
 /*
-GlyphClassLike defines the set of class constants, constructors and functions
-that must be supported by all glyph-class-like classes.
-*/
-type GlyphClassLike interface {
-	// Constructors
-	MakeWithAttributes(first string, last string) GlyphLike
-}
-
-/*
-GrammarClassLike defines the set of class constants, constructors and functions
-that must be supported by all grammar-class-like classes.
-*/
-type GrammarClassLike interface {
-	// Constructors
-	MakeWithAttributes(headers col.Sequential[HeaderLike], definitions col.Sequential[DefinitionLike]) GrammarLike
-}
-
-/*
 HeaderClassLike defines the set of class constants, constructors and functions
 that must be supported by all header-class-like classes.
 */
 type HeaderClassLike interface {
 	// Constructors
-	MakeWithAttributes(comment string) HeaderLike
+	MakeWithAttributes(comment string, identifier string) HeaderLike
 }
 
 /*
-InlineClassLike defines the set of class constants, constructors and functions
-that must be supported by all inline-class-like classes.
+ImportsClassLike defines the set of class constants, constructors and functions
+that must be supported by all imports-class-like classes.
 */
-type InlineClassLike interface {
+type ImportsClassLike interface {
 	// Constructors
-	MakeWithAttributes(alternatives col.Sequential[AlternativeLike], note string) InlineLike
+	MakeWithAttributes(modules ModulesLike) ImportsLike
 }
 
 /*
-InversionClassLike defines the set of class constants, constructors and functions
-that must be supported by all inversion-class-like classes.
+InstanceClassLike defines the set of class constants, constructors and functions
+that must be supported by all instance-class-like classes.
 */
-type InversionClassLike interface {
+type InstanceClassLike interface {
 	// Constructors
-	MakeWithAttributes(inverted bool, filter FilterLike) InversionLike
+	MakeWithAttributes(
+		declaration DeclarationLike,
+		attributes AttributesLike,
+		abstractions AbstractionsLike,
+		methods MethodsLike,
+	) InstanceLike
 }
 
 /*
-LineClassLike defines the set of class constants, constructors and functions
-that must be supported by all line-class-like classes.
+InstancesClassLike defines the set of class constants, constructors and
+functions that must be supported by all instances-class-like classes.
 */
-type LineClassLike interface {
+type InstancesClassLike interface {
 	// Constructors
-	MakeWithAttributes(alternative AlternativeLike, note string) LineLike
+	MakeWithAttributes(sequence col.Sequential[InstanceLike]) InstancesLike
 }
 
 /*
-MultilineClassLike defines the set of class constants, constructors and functions
-that must be supported by all inline-class-like classes.
+InterfacesClassLike defines the set of class constants, constructors and
+functions that must be supported by all interfaces-class-like classes.
 */
-type MultilineClassLike interface {
+type InterfacesClassLike interface {
 	// Constructors
-	MakeWithAttributes(lines col.Sequential[LineLike]) MultilineLike
+	MakeWithAttributes(
+		aspects AspectsLike,
+		classes ClassesLike,
+		instances InstancesLike,
+	) InterfacesLike
+}
+
+/*
+MethodClassLike defines the set of class constants, constructors and functions
+that must be supported by all method-class-like classes.
+*/
+type MethodClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		identifier string,
+		parameters ParametersLike,
+		result ResultLike,
+	) MethodLike
+}
+
+/*
+MethodsClassLike defines the set of class constants, constructors and functions
+that must be supported by all methods-class-like classes.
+*/
+type MethodsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[MethodLike]) MethodsLike
+}
+
+/*
+ModelClassLike defines the set of class constants, constructors and functions
+that must be supported by all package-class-like classes.
+*/
+type ModelClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		notice NoticeLike,
+		header HeaderLike,
+		imports ImportsLike,
+		types TypesLike,
+		interfaces InterfacesLike,
+	) ModelLike
+}
+
+/*
+ModuleClassLike defines the set of class constants, constructors and
+functions that must be supported by all module-class-like classes.
+*/
+type ModuleClassLike interface {
+	// Constructors
+	MakeWithAttributes(identifier string, text string) ModuleLike
+}
+
+/*
+ModulesClassLike defines the set of class constants, constructors and functions
+that must be supported by all modules-class-like classes.
+*/
+type ModulesClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[ModuleLike]) ModulesLike
+}
+
+/*
+NoticeClassLike defines the set of class constants, constructors and
+functions that must be supported by all notice-class-like classes.
+*/
+type NoticeClassLike interface {
+	// Constructors
+	MakeWithAttributes(comment string) NoticeLike
+}
+
+/*
+ParameterClassLike defines the set of class constants, constructors and
+functions that must be supported by all parameter-class-like classes.
+*/
+type ParameterClassLike interface {
+	// Constructors
+	MakeWithAttributes(identifier string, abstraction AbstractionLike) ParameterLike
+}
+
+/*
+ParametersClassLike defines the set of class constants, constructors and
+functions that must be supported by all parameters-class-like classes.
+*/
+type ParametersClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[ParameterLike]) ParametersLike
 }
 
 /*
@@ -233,23 +433,22 @@ type ParserClassLike interface {
 }
 
 /*
-PrecedenceClassLike defines the set of class constants, constructors and
-functions that must be supported by all precedence-class-like classes.
+PrefixClassLike defines the set of class constants, constructors and
+functions that must be supported by all prefix-class-like classes.
 */
-type PrecedenceClassLike interface {
+type PrefixClassLike interface {
 	// Constructors
-	MakeWithAttributes(expression ExpressionLike) PrecedenceLike
+	MakeWithAttributes(identifier string, type_ PrefixType) PrefixLike
 }
 
 /*
-PredicateClassLike defines the set of class constants, constructors and
-functions that must be supported by all predicate-class-like classes.
+ResultClassLike defines the set of class constants, constructors and functions
+that must be supported by all result-class-like classes.
 */
-type PredicateClassLike interface {
+type ResultClassLike interface {
 	// Constructors
-	MakeWithElement(element ElementLike) PredicateLike
-	MakeWithInversion(inversion InversionLike) PredicateLike
-	MakeWithPrecedence(precedence PrecedenceLike) PredicateLike
+	MakeWithAbstraction(abstraction AbstractionLike) ResultLike
+	MakeWithParameters(parameters ParametersLike) ResultLike
 }
 
 /*
@@ -262,6 +461,28 @@ type ScannerClassLike interface {
 
 	// Functions
 	MatchToken(type_ TokenType, text string) col.ListLike[string]
+}
+
+/*
+SpecializationClassLike defines the set of class constants, constructors and
+functions that must be supported by all specialization-class-like classes.
+*/
+type SpecializationClassLike interface {
+	// Constructors
+	MakeWithAttributes(
+		declaration DeclarationLike,
+		abstraction AbstractionLike,
+		enumeration EnumerationLike,
+	) SpecializationLike
+}
+
+/*
+SpecializationsClassLike defines the set of class constants, constructors and
+functions that must be supported by all specializations-class-like classes.
+*/
+type SpecializationsClassLike interface {
+	// Constructors
+	MakeWithAttributes(sequence col.Sequential[SpecializationLike]) SpecializationsLike
 }
 
 /*
@@ -282,6 +503,15 @@ type TokenClassLike interface {
 }
 
 /*
+TypesClassLike defines the set of class constants, constructors and functions
+that must be supported by all types-class-like classes.
+*/
+type TypesClassLike interface {
+	// Constructors
+	MakeWithAttributes(specializations SpecializationsLike, functionals FunctionalsLike) TypesLike
+}
+
+/*
 ValidatorClassLike defines the set of class constants, constructors and
 functions that must be supported by all validator-class-like classes.
 */
@@ -290,214 +520,425 @@ type ValidatorClassLike interface {
 	Make() ValidatorLike
 }
 
+/*
+ValuesClassLike defines the set of class constants, constructors and functions
+that must be supported by all values-class-like classes.
+*/
+type ValuesClassLike interface {
+	// Constructors
+	MakeWithAttributes(parameter ParameterLike, sequence col.Sequential[string]) ValuesLike
+}
+
 // Instances
 
 /*
-AlternativeLike defines the set of aspects and methods that must be supported by
-all alternative-like instances.
+AbstractionLike defines the set of abstractions and methods that must be
+supported by all abstraction-like instances.
 */
-type AlternativeLike interface {
+type AbstractionLike interface {
 	// Attributes
-	GetFactors() col.Sequential[FactorLike]
+	GetPrefix() PrefixLike
+	GetIdentifier() string
+	GetArguments() ArgumentsLike
 }
 
 /*
-CardinalityLike defines the set of aspects and methods that must be supported by
-all cardinality-like instances.
+AbstractionsLike defines the set of abstractions and methods that must be
+supported by all abstractions-like instances.
 */
-type CardinalityLike interface {
+type AbstractionsLike interface {
 	// Attributes
-	GetConstraint() ConstraintLike
+	GetSequence() col.Sequential[AbstractionLike]
 }
 
 /*
-ConstraintLike defines the set of aspects and methods that must be supported by
-all constraint-like instances.
+ArgumentsLike defines the set of abstractions and methods that must be supported
+by all arguments-like instances.
 */
-type ConstraintLike interface {
+type ArgumentsLike interface {
 	// Attributes
-	GetFirst() string
-	GetLast() string
+	GetSequence() col.Sequential[AbstractionLike]
 }
 
 /*
-DefinitionLike defines the set of aspects and methods that must be supported by
-all definition-like instances.
+AspectLike defines the set of abstractions and methods that must be supported by
+all aspect-like instances.
 */
-type DefinitionLike interface {
+type AspectLike interface {
+	// Attributes
+	GetDeclaration() DeclarationLike
+	GetMethods() MethodsLike
+}
+
+/*
+AspectsLike defines the set of abstractions and methods that must be supported
+by all aspects-like instances.
+*/
+type AspectsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[AspectLike]
+}
+
+/*
+AttributeLike defines the set of abstractions and methods that must be supported
+by all attribute-like instances.
+*/
+type AttributeLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetParameter() ParameterLike
+	GetAbstraction() AbstractionLike
+}
+
+/*
+AttributesLike defines the set of abstractions and methods that must be supported
+by all attributes-like instances.
+*/
+type AttributesLike interface {
+	// Attributes
+	GetSequence() col.Sequential[AttributeLike]
+}
+
+/*
+ClassLike defines the set of abstractions and methods that must be supported by
+all class-like instances.
+*/
+type ClassLike interface {
+	// Attributes
+	GetDeclaration() DeclarationLike
+	GetConstants() ConstantsLike
+	GetConstructors() ConstructorsLike
+	GetFunctions() FunctionsLike
+}
+
+/*
+ClassesLike defines the set of abstractions and methods that must be supported
+by all classes-like instances.
+*/
+type ClassesLike interface {
+	// Attributes
+	GetSequence() col.Sequential[ClassLike]
+}
+
+/*
+ConstantLike defines the set of abstractions and methods that must be supported
+by all constant-like instances.
+*/
+type ConstantLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetAbstraction() AbstractionLike
+}
+
+/*
+ConstantsLike defines the set of abstractions and methods that must be supported
+by all constants-like instances.
+*/
+type ConstantsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[ConstantLike]
+}
+
+/*
+ConstructorLike defines the set of abstractions and methods that must be
+supported by all constructor-like instances.
+*/
+type ConstructorLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetParameters() ParametersLike
+	GetAbstraction() AbstractionLike
+}
+
+/*
+ConstructorsLike defines the set of abstractions and methods that must be
+supported by all constructors-like instances.
+*/
+type ConstructorsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[ConstructorLike]
+}
+
+/*
+DeclarationLike defines the set of abstractions and methods that must be
+supported by all declaration-like instances.
+*/
+type DeclarationLike interface {
 	// Attributes
 	GetComment() string
-	GetName() string
-	GetExpression() ExpressionLike
+	GetIdentifier() string
+	GetParameters() ParametersLike
 }
 
 /*
-ElementLike defines the set of aspects and methods that must be supported by all
-element-like instances.
+EnumerationLike defines the set of abstractions and methods that must be
+supported by all enumeration-like instances.
 */
-type ElementLike interface {
+type EnumerationLike interface {
 	// Attributes
-	GetLiteral() string
-	GetName() string
+	GetValues() ValuesLike
 }
 
 /*
-ExpressionLike defines the set of aspects and methods that must be supported by
-all expression-like instances.
-*/
-type ExpressionLike interface {
-	// Attributes
-	GetInline() InlineLike
-	GetMultiline() MultilineLike
-}
-
-/*
-FactorLike defines the set of aspects and methods that must be supported by all
-factor-like instances.
-*/
-type FactorLike interface {
-	// Attributes
-	GetPredicate() PredicateLike
-	GetCardinality() CardinalityLike
-}
-
-/*
-FilterLike defines the set of aspects and methods that must be supported by all
-filter-like instances.
-*/
-type FilterLike interface {
-	// Attributes
-	GetIntrinsic() string
-	GetGlyph() GlyphLike
-}
-
-/*
-FormatterLike defines the set of aspects and methods that must be supported by
-all formatter-like instances.
+FormatterLike defines the set of abstractions and methods that must be
+supported by all formatter-like instances.
 */
 type FormatterLike interface {
 	// Methods
-	FormatDefinition(definition DefinitionLike) string
-	FormatGrammar(grammar GrammarLike) string
+	FormatAbstraction(abstraction AbstractionLike) string
+	FormatArguments(arguments ArgumentsLike) string
+	FormatMethod(method MethodLike) string
+	FormatModel(model ModelLike) string
+	FormatParameter(parameter ParameterLike) string
+	FormatParameterNames(parameters ParametersLike) string
+	FormatParameters(parameters ParametersLike) string
+	FormatResult(result ResultLike) string
 }
 
 /*
-GeneratorLike defines the set of aspects and methods that must be supported by
-all generator-like instances.
+FunctionLike defines the set of abstractions and methods that must be supported
+by all function-like instances.
+*/
+type FunctionLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetParameters() ParametersLike
+	GetResult() ResultLike
+}
+
+/*
+FunctionalLike defines the set of abstractions and methods that must be
+supported by all functional-like instances.
+*/
+type FunctionalLike interface {
+	// Attributes
+	GetDeclaration() DeclarationLike
+	GetParameters() ParametersLike
+	GetResult() ResultLike
+}
+
+/*
+FunctionalsLike defines the set of abstractions and methods that must be
+supported by all functionals-like instances.
+*/
+type FunctionalsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[FunctionalLike]
+}
+
+/*
+FunctionsLike defines the set of abstractions and methods that must be supported
+by all functions-like instances.
+*/
+type FunctionsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[FunctionLike]
+}
+
+/*
+GeneratorLike defines the set of abstractions and methods that must be
+supported by all generator-like instances.
 */
 type GeneratorLike interface {
 	// Methods
-	CreateGrammar(directory string, copyright string)
-	GenerateModel(directory string)
+	CreateModel(
+		directory string,
+		name string,
+		copyright string,
+	)
+	GeneratePackage(directory string)
 }
 
 /*
-GlyphLike defines the set of aspects and methods that must be supported by all
-glyph-like instances.
-*/
-type GlyphLike interface {
-	// Attributes
-	GetFirst() string
-	GetLast() string
-}
-
-/*
-GrammarLike defines the set of aspects and methods that must be supported by all
-grammar-like instances.
-*/
-type GrammarLike interface {
-	// Attributes
-	GetHeaders() col.Sequential[HeaderLike]
-	GetDefinitions() col.Sequential[DefinitionLike]
-}
-
-/*
-HeaderLike defines the set of aspects and methods that must be supported by all
-header-like instances.
+HeaderLike defines the set of abstractions and methods that must be supported by
+all header-like instances.
 */
 type HeaderLike interface {
 	// Attributes
 	GetComment() string
+	GetIdentifier() string
 }
 
 /*
-InlineLike defines the set of aspects and methods that must be supported by all
-inline-like instances.
+ImportsLike defines the set of abstractions and methods that must be supported
+by all imports-like instances.
 */
-type InlineLike interface {
+type ImportsLike interface {
 	// Attributes
-	GetAlternatives() col.Sequential[AlternativeLike]
-	GetNote() string
+	GetModules() ModulesLike
 }
 
 /*
-InversionLike defines the set of aspects and methods that must be supported by all
-inversion-like instances.
+InstanceLike defines the set of abstractions and methods that must be supported
+by all instance-like instances.
 */
-type InversionLike interface {
+type InstanceLike interface {
 	// Attributes
-	IsInverted() bool
-	GetFilter() FilterLike
+	GetDeclaration() DeclarationLike
+	GetAttributes() AttributesLike
+	GetAbstractions() AbstractionsLike
+	GetMethods() MethodsLike
 }
 
 /*
-LineLike defines the set of aspects and methods that must be supported by all
-line-like instances.
+InstancesLike defines the set of abstractions and methods that must be supported
+by all instances-like instances.
 */
-type LineLike interface {
+type InstancesLike interface {
 	// Attributes
-	GetAlternative() AlternativeLike
-	GetNote() string
+	GetSequence() col.Sequential[InstanceLike]
 }
 
 /*
-MultilineLike defines the set of aspects and methods that must be supported by all
-multiline-like instances.
+InterfacesLike defines the set of abstractions and methods that must be
+supported by all interfaces-like instances.
 */
-type MultilineLike interface {
+type InterfacesLike interface {
 	// Attributes
-	GetLines() col.Sequential[LineLike]
+	GetAspects() AspectsLike
+	GetClasses() ClassesLike
+	GetInstances() InstancesLike
 }
 
 /*
-ParserLike defines the set of aspects and methods that must be supported by all
-parser-like instances.
+MethodLike defines the set of abstractions and methods that must be supported by
+all method-like instances.
+*/
+type MethodLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetParameters() ParametersLike
+	GetResult() ResultLike
+}
+
+/*
+MethodsLike defines the set of abstractions and methods that must be supported
+by all methods-like instances.
+*/
+type MethodsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[MethodLike]
+}
+
+/*
+ModelLike defines the set of abstractions and methods that must be supported by
+all package-like instances.
+*/
+type ModelLike interface {
+	// Attributes
+	GetNotice() NoticeLike
+	GetHeader() HeaderLike
+	GetImports() ImportsLike
+	GetTypes() TypesLike
+	GetInterfaces() InterfacesLike
+}
+
+/*
+ModuleLike defines the set of abstractions and methods that must be
+supported by all module-like instances.
+*/
+type ModuleLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetText() string
+}
+
+/*
+ModulesLike defines the set of abstractions and methods that must be supported
+by all modules-like instances.
+*/
+type ModulesLike interface {
+	// Attributes
+	GetSequence() col.Sequential[ModuleLike]
+}
+
+/*
+NoticeLike defines the set of abstractions and methods that must be supported
+by all notice-like instances.
+*/
+type NoticeLike interface {
+	// Attributes
+	GetComment() string
+}
+
+/*
+ParameterLike defines the set of abstractions and methods that must be supported
+by all parameter-like instances.
+*/
+type ParameterLike interface {
+	// Attributes
+	GetIdentifier() string
+	GetAbstraction() AbstractionLike
+}
+
+/*
+ParametersLike defines the set of abstractions and methods that must be
+supported by all parameters-like instances.
+*/
+type ParametersLike interface {
+	// Attributes
+	GetSequence() col.Sequential[ParameterLike]
+}
+
+/*
+ParserLike defines the set of abstractions and methods that must be supported by
+all parser-like instances.
 */
 type ParserLike interface {
 	// Methods
-	ParseSource(source string) GrammarLike
+	ParseSource(source string) ModelLike
 }
 
 /*
-PrecedenceLike defines the set of aspects and methods that must be supported by
-all precedence-like instances.
+PrefixLike defines the set of abstractions and methods that must be
+supported by all prefix-like instances.
 */
-type PrecedenceLike interface {
+type PrefixLike interface {
 	// Attributes
-	GetExpression() ExpressionLike
+	GetType() PrefixType
+	GetIdentifier() string
 }
 
 /*
-PredicateLike defines the set of aspects and methods that must be supported by
-all predicate-like instances.
+ResultLike defines the set of abstractions and methods that must be supported by
+all result-like instances.
 */
-type PredicateLike interface {
+type ResultLike interface {
 	// Attributes
-	GetElement() ElementLike
-	GetInversion() InversionLike
-	GetPrecedence() PrecedenceLike
+	GetAbstraction() AbstractionLike
+	GetParameters() ParametersLike
 }
 
 /*
-ScannerLike defines the set of aspects and methods that must be supported by all
-scanner-like instances.
+ScannerLike defines the set of abstractions and methods that must be supported
+by all scanner-like instances.
 */
 type ScannerLike interface {
 }
 
 /*
-TokenLike defines the set of aspects and methods that must be supported by all
-token-like instances.
+SpecializationLike defines the set of abstractions and methods that must be
+supported by all specialization-like instances.
+*/
+type SpecializationLike interface {
+	// Attributes
+	GetDeclaration() DeclarationLike
+	GetAbstraction() AbstractionLike
+	GetEnumeration() EnumerationLike
+}
+
+/*
+SpecializationsLike defines the set of abstractions and methods that must be
+supported by all parameters-like instances.
+*/
+type SpecializationsLike interface {
+	// Attributes
+	GetSequence() col.Sequential[SpecializationLike]
+}
+
+/*
+TokenLike defines the set of abstractions and methods that must be supported by
+all token-like instances.
 */
 type TokenLike interface {
 	// Attributes
@@ -508,10 +949,30 @@ type TokenLike interface {
 }
 
 /*
-ValidatorLike defines the set of aspects and methods that must be supported by
-all validator-like instances.
+TypesLike defines the set of abstractions and methods that must be supported by
+all types-like instances.
+*/
+type TypesLike interface {
+	// Attributes
+	GetSpecializations() SpecializationsLike
+	GetFunctionals() FunctionalsLike
+}
+
+/*
+ValidatorLike defines the set of abstractions and methods that must be
+supported by all validator-like instances.
 */
 type ValidatorLike interface {
 	// Methods
-	ValidateGrammar(grammar GrammarLike)
+	ValidateModel(model ModelLike)
+}
+
+/*
+ValuesLike defines the set of abstractions and methods that must be supported by
+all values-like instances.
+*/
+type ValuesLike interface {
+	// Attributes
+	GetParameter() ParameterLike
+	GetSequence() col.Sequential[string]
 }
